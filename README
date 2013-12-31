@@ -1,0 +1,12 @@
+ggl - automatically generated opengl bindings for go
+
+This provides bindings for openGL ~4.2 core as well as very basic window opening using SDL2.  Wrapfunc.go generates bindings from the prototypes in api.h and definitions in defines.h, both derived from glcoreapi.h.  Types are converted automatically to and from native go types, so for example GLuint becomes uint32.  Pointer types are converted directly currently, go arrays and strings are not used.  The same care exercised with memory in C must be used.  Most functions should work but some type conversion still need to be implemented and some important functions are not generated.
+
+Additional functions for window management:
+gl.InitGL(width, height, msaa int) - width and height specify the window resolution, msaa specifies the number of msaa samples per pixel
+gl.Flip() - swaps the back and front buffers, updating the screen
+gl.Q() - closes the window and uninitializes SDL
+
+The lines specifying the SDL2 include path in windowing.go and autogened.go may need to be modified to suit your system.
+
+main.go is an example program which should display a Sierpinski triangle in blue and orange.
