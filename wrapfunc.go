@@ -14,27 +14,48 @@ var fnblacklist = map[string]bool{
 "glMakeImageHandleNonResidentARB":true,
 "glMakeTextureHandleResidentARB":true,
 "glMakeTextureHandleNonResidentARB":true,
+"glBindBuffersBase":true,
+"glBindImageTextures":true,
+"glBindSamplers":true,
+"glBindTextures":true,
+"glCompileShaderIncludeARB":true,
+"glMultiDrawArraysIndirectCountARB":true,
+"glMultiDrawElementsIndirectCountARB":true,
+"glClearTexSubImage":true,
+"glBufferStorage":true,
+"glClearTexImage":true,
+"glIsNamedStringARB":true,
+"glDeleteNamedStringARB":true,
+"glGetNamedStringARB":true,
+"glGetNamedStringivARB":true,
+"glNamedStringARB":true,
+"glMakeImageHandleResidentARB":true,
+"glProgramUniformHandleui64ARB":true,
+"glUniformHandleui64ARB":true,
 
 }
 
 var typemap map[string] [3]string
 func init(){
 typemap = make(map[string] [3]string)//type, convertto
+//push all pointer making to client code?
+/*
 typemap["GLenum"] =                   [3]string{"int", "\t$o := C.GLenum($i)", "\t$o := int($i)"}
 typemap["GLint"] =                    [3]string{"int", "\t$o := C.GLint($i)", "\tpanic()"}
 typemap["GLsizei"] =                  [3]string{"int", "\t$o := C.GLsizei($i)", "\tpanic()"}
 typemap["const void *"] =             [3]string{"[]byte", "\tpanic()", "\tpanic()"}
 typemap["GLfloat"] =                  [3]string{"float32", "\t$o := C.GLfloat($i)", "\tpanic()"}
-typemap["GLboolean"] =                [3]string{"bool", "\t$o := C.GLboolean(1);if !$i{$o=C.GLboolean(0)}", "\tpanic()"}
+typemap["GLboolean"] =                [3]string{"bool", "\t$o := C.GLboolean(TRUE);if !$i{$o=C.GLboolean(FALSE)}", "\t$o := false;if $i==GL_TRUE{$o=true}"}
 typemap["GLuint"] =                   [3]string{"uint", "\t$o := C.GLuint($i)", "\tpanic()"}
-typemap["void **"] =                  [3]string{"???", "\tpanic()", "\tpanic()"}
-typemap["const void *"] =             [3]string{"???", "\tpanic()", "\tpanic()"}
-typemap["const GLuint *"] =           [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["void **"] =                  [3]string{"???", "\tpanic()", "\tpanic()"}//used by getPointer functions
+typemap["const void *"] =             [3]string{"???", "\tpanic()", "\tpanic()"}//used by glBufferData/glTexImage ([]byte), glDrawelements (offset/pointer to indices)... uintptr?
+//typemap["const GLuint *"] =           [3]string{"[]uint", "\t$o := (*C.GLuint)(unsafe.Pointer(&$i[0]))", "\tpanic()"}//arrays of identifiers or uints
+typemap["const GLuint *"] =           [3]string{"[]uint", "\tpanic()", "\tpanic()"}//FIXME:won't compile with this (undefined reference to glBindTextures etc)^
 typemap["GLsizeiptr"] =               [3]string{"int", "\t$o := C.GLsizeiptr($i)", "\tpanic()"}
-typemap["const GLint *"] =            [3]string{"???", "\tpanic()", "\tpanic()"}
-typemap["GLuint *"] =                 [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["const GLint *"] =            [3]string{"???", "\tpanic()", "\tpanic()"}//uniforms, lengths of shader sources, etc XXX:sometimes may be an offset
+typemap["GLuint *"] =                 [3]string{"[]uint", "\t$o := (*C.GLuint)(unsafe.Pointer(&$i[0]))", "\tpanic()"}//glGen*  FIXME:this will fail if len($o)<1
 typemap["void"] =                     [3]string{"", "", "\tpanic()"}
-typemap["const GLfloat *"] =          [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["const GLfloat *"] =          [3]string{"[]float32", "\t$o := (*C.GLfloat)(unsafe.Pointer(&$i[0]))", "\tpanic()"}//uniforms, etc
 typemap["GLbitfield"] =               [3]string{"uint", "\t$o := C.GLbitfield($i)", "\t$o := uint($i)"}
 typemap["GLdouble"] =                 [3]string{"float64", "\t$o := C.GLdouble($i)", "\tpanic()"}
 typemap["GLboolean *"] =              [3]string{"???", "\tpanic()", "\tpanic()"}
@@ -46,14 +67,14 @@ typemap["const_GLubyte_*"] =          [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["void *"] =                   [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["void*"] =                    [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["const GLsizei *"] =          [3]string{"???", "\tpanic()", "\tpanic()"}
-typemap["GLsizei *"] =                [3]string{"int", "\t$o := C.GLsizei($i)", "\tpanic()"}
+typemap["GLsizei *"] =                [3]string{"int", "\tpanic()", "\tpanic()"}
 typemap["GLchar *"] =                 [3]string{"int", "\tpanic()", "\tpanic()"}
 typemap["const void *const*"] =       [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["GLintptr"] =                 [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["GLshort"] =                  [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["const GLshort *"] =          [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["GLenum *"] =                 [3]string{"???", "\tpanic()", "\tpanic()"}
-typemap["const GLchar *"] =           [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["const GLchar *"] =           [3]string{"???", "\tpanic()", "\tpanic()"}//names for things (probably need to convert to cstrings)
 typemap["const GLchar *const*"] =     [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["const GLuint64EXT *"] =      [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["struct _cl_context *"] =     [3]string{"???", "\tpanic()", "\tpanic()"}
@@ -67,6 +88,62 @@ typemap["GLDEBUGPROC"] =              [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["GLDEBUGPROCARB"] =           [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["const GLintptr *"] =         [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["const GLenum *"] =           [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["GLuint64 *"] =               [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["GLsync"] =                   [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["const char *__restrict"] =   [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["const GLushort *"] =         [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["GLubyte"] =                  [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["const GLbyte *"] =           [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["const GLubyte *"] =          [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["const GLsizeiptr *"] =       [3]string{"???", "\tpanic()", "\tpanic()"}
+*/
+typemap["GLenum"] =                   [3]string{"int32", "\t$o := C.GLenum($i)", "\t$o := int32($i)"}
+typemap["GLint"] =                    [3]string{"int32", "\t$o := C.GLint($i)", "\t$o := int32($i)"}
+typemap["GLsizei"] =                  [3]string{"int32", "\t$o := C.GLsizei($i)", "\tpanic()"}
+typemap["GLfloat"] =                  [3]string{"float32", "\t$o := C.GLfloat($i)", "\tpanic()"}
+typemap["GLboolean"] =                [3]string{"bool", "\t$o := C.GLboolean(TRUE);if !$i{$o=C.GLboolean(FALSE)}", "\t$o := false;if $i==TRUE{$o=true}"}
+typemap["GLuint"] =                   [3]string{"uint32", "\t$o := C.GLuint($i)", "\t$o := uint32($i)"}
+typemap["void **"] =                  [3]string{"???", "\tpanic()", "\tpanic()"}//used by getPointer functions
+//typemap["const void *"] =             [3]string{"*byte", "\t$o := (*C.void)(unsafe.Pointer($i))", "\tpanic()"}
+typemap["const void *"] =             [3]string{"uintptr", "\t$o := unsafe.Pointer($i)", "\tpanic()"}//used by glBufferData/glTexImage ([]byte), glDrawelements (offset/pointer to indices)... uintptr? unsafe.pointer?
+typemap["const GLuint *"] =           [3]string{"*uint32", "\t$o := (*C.GLuint)(unsafe.Pointer($i))", "\tpanic()"}//FIXME:won't compile with this (undefined reference to glBindTextures etc)^
+typemap["GLsizeiptr"] =               [3]string{"int32", "\t$o := C.GLsizeiptr($i)", "\tpanic()"}
+typemap["const GLint *"] =            [3]string{"*int32", "\t$o := (*C.GLint)(unsafe.Pointer($i))", "\tpanic()"}//uniforms, lengths of shader sources, etc XXX:sometimes may be an offset
+typemap["GLuint *"] =                 [3]string{"*uint32", "\t$o := (*C.GLuint)(unsafe.Pointer($i))", "\tpanic()"}//glGen*  FIXME:this will fail if len($o)<1
+typemap["void"] =                     [3]string{"", "", "\tpanic()"}
+typemap["const GLfloat *"] =          [3]string{"*float32", "\t$o := (*C.GLfloat)(unsafe.Pointer($i))", "\tpanic()"}//uniforms, etc
+typemap["GLbitfield"] =               [3]string{"uint32", "\t$o := C.GLbitfield($i)", "\t$o := uint($i)"}
+typemap["GLdouble"] =                 [3]string{"float64", "\t$o := C.GLdouble($i)", "\tpanic()"}
+typemap["GLboolean *"] =              [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["GLdouble *"] =               [3]string{"*float64", "\t$o := (*C.GLdouble)(unsafe.Pointer($i))", "\tpanic()"}
+typemap["const GLdouble *"] =         [3]string{"*float64", "\t$o := (*C.GLdouble)(unsafe.Pointer($i))", "\tpanic()"}
+typemap["GLfloat *"] =                [3]string{"*float32", "\t$o := (*C.GLfloat)(unsafe.Pointer($i))", "\tpanic()"}
+typemap["GLint *"] =                  [3]string{"*int32", "\t$o := (*C.GLint)(unsafe.Pointer($i))", "\tpanic()"}
+typemap["const_GLubyte_*"] =          [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["void *"] =                   [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["void*"] =                    [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["const GLsizei *"] =          [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["GLsizei *"] =                [3]string{"*int32", "\t$o := (*C.GLsizei)(unsafe.Pointer($i))", "\tpanic()"}
+typemap["GLchar *"] =                 [3]string{"*byte", "\t$o := (*C.GLchar)(unsafe.Pointer($i))", "\tpanic()"}
+typemap["const void *const*"] =       [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["GLintptr"] =                 [3]string{"uintptr", "\t$o :=C.GLintptr($i)", "\tpanic()"}
+typemap["GLshort"] =                  [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["const GLshort *"] =          [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["GLenum *"] =                 [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["const GLchar *"] =           [3]string{"*byte", "\t$o := (*C.GLchar)(unsafe.Pointer($i))", "\tpanic()"}//names for things (probably need to convert to cstrings)
+typemap["const GLchar *const*"] =     [3]string{"**byte", "\t$o := (**C.GLchar)(unsafe.Pointer($i))", "\tpanic()"}//shadersource, etc (list of strings)
+typemap["const GLuint64EXT *"] =      [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["struct _cl_context *"] =     [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["GLint64 *"] =                [3]string{"*int64", "\t$o := (*C.GLint64)(unsafe.Pointer($i))", "\tpanic()"}
+typemap["GLuint64"] =                 [3]string{"*uint64", "\t$o := (*C.GLuint64)(unsafe.Pointer($i))", "\tpanic()"}
+typemap["GLuint64EXT"] =              [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["const GLuint64 *"] =         [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["struct _cl_event *"] =       [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["GLuint64EXT *"] =            [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["GLDEBUGPROC"] =              [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["GLDEBUGPROCARB"] =           [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["const GLintptr *"] =         [3]string{"*uintptr", "\t$o := (*C.GLintptr)(unsafe.Pointer($i))", "\tpanic()"}//array of intptrs (offsets)
+typemap["const GLenum *"] =           [3]string{"*uint32", "\t$o := (*C.GLenum)(unsafe.Pointer($i))", "\tpanic()"}
 typemap["GLuint64 *"] =               [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["GLsync"] =                   [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["const char *__restrict"] =   [3]string{"???", "\tpanic()", "\tpanic()"}
@@ -126,6 +203,10 @@ func params(in string) [][2]string{
 			rv = append(rv, [2]string{strings.Trim(p[0:lastind], " "), strings.Trim("function", " ")})
 		}else if strings.Trim(p[lastind:], " ") == "type"{
 			rv = append(rv, [2]string{strings.Trim(p[0:lastind], " "), strings.Trim("whichtype", " ")})
+		}else if strings.Trim(p[lastind:], " ") == "string"{
+			rv = append(rv, [2]string{strings.Trim(p[0:lastind], " "), strings.Trim("whatstring", " ")})
+		}else if strings.Trim(p[lastind:], " ") == "range"{
+			rv = append(rv, [2]string{strings.Trim(p[0:lastind], " "), strings.Trim("whichrange", " ")})
 		}else{
 			rv = append(rv, [2]string{strings.Trim(p[0:lastind], " "), strings.Trim(p[lastind:], " ")})
 		}
@@ -164,6 +245,7 @@ package gl
 // #include "glcorearb.h"
 // #include <stdlib.h>
 import "C"
+import "unsafe"
 `)
 	definesfile, _ := os.Open("defines.h")
 	definescanner := bufio.NewScanner(definesfile)
@@ -176,6 +258,7 @@ import "C"
 	scanner := bufio.NewScanner(inputfile)
 	failedcount := 0
 	succeededcount := 0
+	blacklistedcount := 0
 	for scanner.Scan(){
 		str := scanner.Text()
 		//fmt.Println(params(str))
@@ -187,11 +270,18 @@ import "C"
 			newparams = newparams[:len(newparams)-2]
 		}
 		funcdata := "func "+fnname(str)[2:]+"("+newparams+")"+gotype(returntype(str))+"{\n"+makeconvertto(str)+makecall(str)+"}"
-		if _, ok := fnblacklist[fnname(str)]; ok || strings.Index(funcdata, "panic") != -1{fmt.Println("/*"+funcdata+"*/");failedcount ++;}else{fmt.Println(funcdata);succeededcount++}
+		if strings.Index(funcdata, "panic") != -1{
+			fmt.Println("/*"+funcdata+"*/");failedcount ++;
+		}else if _, ok := fnblacklist[fnname(str)]; ok {
+			fmt.Println("/*"+funcdata+"*///(blacklisted)");blacklistedcount ++;
+		}else{
+			fmt.Println(funcdata);succeededcount++
+		}
 	}
 
 
 
 	fmt.Println("//failed: ", failedcount)
 	fmt.Println("//succeeded: ", succeededcount)
+	fmt.Println("//blacklisted: ", blacklistedcount)
 }

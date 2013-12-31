@@ -63,3 +63,6 @@ C.SDL_GL_SetAttribute( C.SDL_GL_DEPTH_SIZE, 16 );
 func Flip(){
 	C.SDL_GL_SwapWindow(win)
 }
+func Q(){
+        C.SDL_Quit()
+}

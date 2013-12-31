@@ -7,6 +7,7 @@ package gl
 // #include "glcorearb.h"
 // #include <stdlib.h>
 import "C"
+import "unsafe"
 
 const VERSION_1_0=1
 const VERSION_1_1=1
@@ -1532,15 +1533,15 @@ const COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR=0x93DB
 const COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR=0x93DC
 const COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR=0x93DD
 const KHR_texture_compression_astc_ldr=1
-func CullFace(mode int){
+func CullFace(mode int32){
 	_mode := C.GLenum(mode)
 	C.glCullFace(_mode)
 }
-func FrontFace(mode int){
+func FrontFace(mode int32){
 	_mode := C.GLenum(mode)
 	C.glFrontFace(_mode)
 }
-func Hint(target int, mode int){
+func Hint(target int32, mode int32){
 	_target := C.GLenum(target)
 	_mode := C.GLenum(mode)
 	C.glHint(_target, _mode)
@@ -1553,43 +1554,43 @@ func PointSize(size float32){
 	_size := C.GLfloat(size)
 	C.glPointSize(_size)
 }
-func PolygonMode(face int, mode int){
+func PolygonMode(face int32, mode int32){
 	_face := C.GLenum(face)
 	_mode := C.GLenum(mode)
 	C.glPolygonMode(_face, _mode)
 }
-func Scissor(x int, y int, width int, height int){
+func Scissor(x int32, y int32, width int32, height int32){
 	_x := C.GLint(x)
 	_y := C.GLint(y)
 	_width := C.GLsizei(width)
 	_height := C.GLsizei(height)
 	C.glScissor(_x, _y, _width, _height)
 }
-func TexParameterf(target int, pname int, param float32){
+func TexParameterf(target int32, pname int32, param float32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
 	_param := C.GLfloat(param)
 	C.glTexParameterf(_target, _pname, _param)
 }
-/*func TexParameterfv(target int, pname int, params ???){
+func TexParameterfv(target int32, pname int32, params *float32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLfloat)(unsafe.Pointer(params))
 	C.glTexParameterfv(_target, _pname, _params)
-}*/
-func TexParameteri(target int, pname int, param int){
+}
+func TexParameteri(target int32, pname int32, param int32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
 	_param := C.GLint(param)
 	C.glTexParameteri(_target, _pname, _param)
 }
-/*func TexParameteriv(target int, pname int, params ???){
+func TexParameteriv(target int32, pname int32, params *int32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glTexParameteriv(_target, _pname, _params)
-}*/
-/*func TexImage1D(target int, level int, internalformat int, width int, border int, format int, whichtype int, pixels ???){
+}
+func TexImage1D(target int32, level int32, internalformat int32, width int32, border int32, format int32, whichtype int32, pixels uintptr){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_internalformat := C.GLint(internalformat)
@@ -1597,10 +1598,10 @@ func TexParameteri(target int, pname int, param int){
 	_border := C.GLint(border)
 	_format := C.GLenum(format)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_pixels := unsafe.Pointer(pixels)
 	C.glTexImage1D(_target, _level, _internalformat, _width, _border, _format, _whichtype, _pixels)
-}*/
-/*func TexImage2D(target int, level int, internalformat int, width int, height int, border int, format int, whichtype int, pixels ???){
+}
+func TexImage2D(target int32, level int32, internalformat int32, width int32, height int32, border int32, format int32, whichtype int32, pixels uintptr){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_internalformat := C.GLint(internalformat)
@@ -1609,14 +1610,14 @@ func TexParameteri(target int, pname int, param int){
 	_border := C.GLint(border)
 	_format := C.GLenum(format)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_pixels := unsafe.Pointer(pixels)
 	C.glTexImage2D(_target, _level, _internalformat, _width, _height, _border, _format, _whichtype, _pixels)
-}*/
-func DrawBuffer(mode int){
+}
+func DrawBuffer(mode int32){
 	_mode := C.GLenum(mode)
 	C.glDrawBuffer(_mode)
 }
-func Clear(mask uint){
+func Clear(mask uint32){
 	_mask := C.GLbitfield(mask)
 	C.glClear(_mask)
 }
@@ -1627,7 +1628,7 @@ func ClearColor(red float32, green float32, blue float32, alpha float32){
 	_alpha := C.GLfloat(alpha)
 	C.glClearColor(_red, _green, _blue, _alpha)
 }
-func ClearStencil(s int){
+func ClearStencil(s int32){
 	_s := C.GLint(s)
 	C.glClearStencil(_s)
 }
@@ -1635,26 +1636,26 @@ func ClearDepth(depth float64){
 	_depth := C.GLdouble(depth)
 	C.glClearDepth(_depth)
 }
-func StencilMask(mask uint){
+func StencilMask(mask uint32){
 	_mask := C.GLuint(mask)
 	C.glStencilMask(_mask)
 }
 func ColorMask(red bool, green bool, blue bool, alpha bool){
-	_red := C.GLboolean(1);if !red{_red=C.GLboolean(0)}
-	_green := C.GLboolean(1);if !green{_green=C.GLboolean(0)}
-	_blue := C.GLboolean(1);if !blue{_blue=C.GLboolean(0)}
-	_alpha := C.GLboolean(1);if !alpha{_alpha=C.GLboolean(0)}
+	_red := C.GLboolean(TRUE);if !red{_red=C.GLboolean(FALSE)}
+	_green := C.GLboolean(TRUE);if !green{_green=C.GLboolean(FALSE)}
+	_blue := C.GLboolean(TRUE);if !blue{_blue=C.GLboolean(FALSE)}
+	_alpha := C.GLboolean(TRUE);if !alpha{_alpha=C.GLboolean(FALSE)}
 	C.glColorMask(_red, _green, _blue, _alpha)
 }
 func DepthMask(flag bool){
-	_flag := C.GLboolean(1);if !flag{_flag=C.GLboolean(0)}
+	_flag := C.GLboolean(TRUE);if !flag{_flag=C.GLboolean(FALSE)}
 	C.glDepthMask(_flag)
 }
-func Disable(cap int){
+func Disable(cap int32){
 	_cap := C.GLenum(cap)
 	C.glDisable(_cap)
 }
-func Enable(cap int){
+func Enable(cap int32){
 	_cap := C.GLenum(cap)
 	C.glEnable(_cap)
 }
@@ -1664,46 +1665,46 @@ func Finish(){
 func Flush(){
 	C.glFlush()
 }
-func BlendFunc(sfactor int, dfactor int){
+func BlendFunc(sfactor int32, dfactor int32){
 	_sfactor := C.GLenum(sfactor)
 	_dfactor := C.GLenum(dfactor)
 	C.glBlendFunc(_sfactor, _dfactor)
 }
-func LogicOp(opcode int){
+func LogicOp(opcode int32){
 	_opcode := C.GLenum(opcode)
 	C.glLogicOp(_opcode)
 }
-func StencilFunc(function int, ref int, mask uint){
+func StencilFunc(function int32, ref int32, mask uint32){
 	_function := C.GLenum(function)
 	_ref := C.GLint(ref)
 	_mask := C.GLuint(mask)
 	C.glStencilFunc(_function, _ref, _mask)
 }
-func StencilOp(fail int, zfail int, zpass int){
+func StencilOp(fail int32, zfail int32, zpass int32){
 	_fail := C.GLenum(fail)
 	_zfail := C.GLenum(zfail)
 	_zpass := C.GLenum(zpass)
 	C.glStencilOp(_fail, _zfail, _zpass)
 }
-func DepthFunc(function int){
+func DepthFunc(function int32){
 	_function := C.GLenum(function)
 	C.glDepthFunc(_function)
 }
-func PixelStoref(pname int, param float32){
+func PixelStoref(pname int32, param float32){
 	_pname := C.GLenum(pname)
 	_param := C.GLfloat(param)
 	C.glPixelStoref(_pname, _param)
 }
-func PixelStorei(pname int, param int){
+func PixelStorei(pname int32, param int32){
 	_pname := C.GLenum(pname)
 	_param := C.GLint(param)
 	C.glPixelStorei(_pname, _param)
 }
-func ReadBuffer(mode int){
+func ReadBuffer(mode int32){
 	_mode := C.GLenum(mode)
 	C.glReadBuffer(_mode)
 }
-/*func ReadPixels(x int, y int, width int, height int, format int, whichtype int, pixels ???){
+/*func ReadPixels(x int32, y int32, width int32, height int32, format int32, whichtype int32, pixels ???){
 	_x := C.GLint(x)
 	_y := C.GLint(y)
 	_width := C.GLsizei(width)
@@ -1713,38 +1714,38 @@ func ReadBuffer(mode int){
 	panic()
 	C.glReadPixels(_x, _y, _width, _height, _format, _whichtype, _pixels)
 }*/
-/*func GetBooleanv(pname int, data ???){
+/*func GetBooleanv(pname int32, data ???){
 	_pname := C.GLenum(pname)
 	panic()
 	C.glGetBooleanv(_pname, _data)
 }*/
-/*func GetDoublev(pname int, data ???){
+func GetDoublev(pname int32, data *float64){
 	_pname := C.GLenum(pname)
-	panic()
+	_data := (*C.GLdouble)(unsafe.Pointer(data))
 	C.glGetDoublev(_pname, _data)
-}*/
-func GetError()int{
+}
+func GetError()int32{
 	returnvalue := C.glGetError()
-	convreturnvalue := int(returnvalue)
+	convreturnvalue := int32(returnvalue)
 return convreturnvalue
 }
-/*func GetFloatv(pname int, data ???){
+func GetFloatv(pname int32, data *float32){
 	_pname := C.GLenum(pname)
-	panic()
+	_data := (*C.GLfloat)(unsafe.Pointer(data))
 	C.glGetFloatv(_pname, _data)
-}*/
-/*func GetIntegerv(pname int, data ???){
+}
+func GetIntegerv(pname int32, data *int32){
 	_pname := C.GLenum(pname)
-	panic()
+	_data := (*C.GLint)(unsafe.Pointer(data))
 	C.glGetIntegerv(_pname, _data)
-}*/
-/*func GetString(name int)???{
+}
+/*func GetString(name int32)???{
 	_name := C.GLenum(name)
 	returnvalue := C.glGetString(_name)
 	panic()
 return convreturnvalue
 }*/
-/*func GetTexImage(target int, level int, format int, whichtype int, pixels ???){
+/*func GetTexImage(target int32, level int32, format int32, whichtype int32, pixels ???){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_format := C.GLenum(format)
@@ -1752,64 +1753,64 @@ return convreturnvalue
 	panic()
 	C.glGetTexImage(_target, _level, _format, _whichtype, _pixels)
 }*/
-/*func GetTexParameterfv(target int, pname int, params ???){
+func GetTexParameterfv(target int32, pname int32, params *float32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLfloat)(unsafe.Pointer(params))
 	C.glGetTexParameterfv(_target, _pname, _params)
-}*/
-/*func GetTexParameteriv(target int, pname int, params ???){
+}
+func GetTexParameteriv(target int32, pname int32, params *int32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetTexParameteriv(_target, _pname, _params)
-}*/
-/*func GetTexLevelParameterfv(target int, level int, pname int, params ???){
+}
+func GetTexLevelParameterfv(target int32, level int32, pname int32, params *float32){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLfloat)(unsafe.Pointer(params))
 	C.glGetTexLevelParameterfv(_target, _level, _pname, _params)
-}*/
-/*func GetTexLevelParameteriv(target int, level int, pname int, params ???){
+}
+func GetTexLevelParameteriv(target int32, level int32, pname int32, params *int32){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetTexLevelParameteriv(_target, _level, _pname, _params)
-}*/
-/*func IsEnabled(cap int)bool{
+}
+func IsEnabled(cap int32)bool{
 	_cap := C.GLenum(cap)
 	returnvalue := C.glIsEnabled(_cap)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
+}
 func DepthRange(near float64, far float64){
 	_near := C.GLdouble(near)
 	_far := C.GLdouble(far)
 	C.glDepthRange(_near, _far)
 }
-func Viewport(x int, y int, width int, height int){
+func Viewport(x int32, y int32, width int32, height int32){
 	_x := C.GLint(x)
 	_y := C.GLint(y)
 	_width := C.GLsizei(width)
 	_height := C.GLsizei(height)
 	C.glViewport(_x, _y, _width, _height)
 }
-func DrawArrays(mode int, first int, count int){
+func DrawArrays(mode int32, first int32, count int32){
 	_mode := C.GLenum(mode)
 	_first := C.GLint(first)
 	_count := C.GLsizei(count)
 	C.glDrawArrays(_mode, _first, _count)
 }
-/*func DrawElements(mode int, count int, whichtype int, indices ???){
+func DrawElements(mode int32, count int32, whichtype int32, indices uintptr){
 	_mode := C.GLenum(mode)
 	_count := C.GLsizei(count)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_indices := unsafe.Pointer(indices)
 	C.glDrawElements(_mode, _count, _whichtype, _indices)
-}*/
-/*func GetPointerv(pname int, params ???){
+}
+/*func GetPointerv(pname int32, params ???){
 	_pname := C.GLenum(pname)
 	panic()
 	C.glGetPointerv(_pname, _params)
@@ -1819,7 +1820,7 @@ func PolygonOffset(factor float32, units float32){
 	_units := C.GLfloat(units)
 	C.glPolygonOffset(_factor, _units)
 }
-func CopyTexImage1D(target int, level int, internalformat int, x int, y int, width int, border int){
+func CopyTexImage1D(target int32, level int32, internalformat int32, x int32, y int32, width int32, border int32){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_internalformat := C.GLenum(internalformat)
@@ -1829,7 +1830,7 @@ func CopyTexImage1D(target int, level int, internalformat int, x int, y int, wid
 	_border := C.GLint(border)
 	C.glCopyTexImage1D(_target, _level, _internalformat, _x, _y, _width, _border)
 }
-func CopyTexImage2D(target int, level int, internalformat int, x int, y int, width int, height int, border int){
+func CopyTexImage2D(target int32, level int32, internalformat int32, x int32, y int32, width int32, height int32, border int32){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_internalformat := C.GLenum(internalformat)
@@ -1840,7 +1841,7 @@ func CopyTexImage2D(target int, level int, internalformat int, x int, y int, wid
 	_border := C.GLint(border)
 	C.glCopyTexImage2D(_target, _level, _internalformat, _x, _y, _width, _height, _border)
 }
-func CopyTexSubImage1D(target int, level int, xoffset int, x int, y int, width int){
+func CopyTexSubImage1D(target int32, level int32, xoffset int32, x int32, y int32, width int32){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_xoffset := C.GLint(xoffset)
@@ -1849,7 +1850,7 @@ func CopyTexSubImage1D(target int, level int, xoffset int, x int, y int, width i
 	_width := C.GLsizei(width)
 	C.glCopyTexSubImage1D(_target, _level, _xoffset, _x, _y, _width)
 }
-func CopyTexSubImage2D(target int, level int, xoffset int, yoffset int, x int, y int, width int, height int){
+func CopyTexSubImage2D(target int32, level int32, xoffset int32, yoffset int32, x int32, y int32, width int32, height int32){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_xoffset := C.GLint(xoffset)
@@ -1860,17 +1861,17 @@ func CopyTexSubImage2D(target int, level int, xoffset int, yoffset int, x int, y
 	_height := C.GLsizei(height)
 	C.glCopyTexSubImage2D(_target, _level, _xoffset, _yoffset, _x, _y, _width, _height)
 }
-/*func TexSubImage1D(target int, level int, xoffset int, width int, format int, whichtype int, pixels ???){
+func TexSubImage1D(target int32, level int32, xoffset int32, width int32, format int32, whichtype int32, pixels uintptr){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_xoffset := C.GLint(xoffset)
 	_width := C.GLsizei(width)
 	_format := C.GLenum(format)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_pixels := unsafe.Pointer(pixels)
 	C.glTexSubImage1D(_target, _level, _xoffset, _width, _format, _whichtype, _pixels)
-}*/
-/*func TexSubImage2D(target int, level int, xoffset int, yoffset int, width int, height int, format int, whichtype int, pixels ???){
+}
+func TexSubImage2D(target int32, level int32, xoffset int32, yoffset int32, width int32, height int32, format int32, whichtype int32, pixels uintptr){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_xoffset := C.GLint(xoffset)
@@ -1879,40 +1880,40 @@ func CopyTexSubImage2D(target int, level int, xoffset int, yoffset int, x int, y
 	_height := C.GLsizei(height)
 	_format := C.GLenum(format)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_pixels := unsafe.Pointer(pixels)
 	C.glTexSubImage2D(_target, _level, _xoffset, _yoffset, _width, _height, _format, _whichtype, _pixels)
-}*/
-func BindTexture(target int, texture uint){
+}
+func BindTexture(target int32, texture uint32){
 	_target := C.GLenum(target)
 	_texture := C.GLuint(texture)
 	C.glBindTexture(_target, _texture)
 }
-/*func DeleteTextures(n int, textures ???){
+func DeleteTextures(n int32, textures *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_textures := (*C.GLuint)(unsafe.Pointer(textures))
 	C.glDeleteTextures(_n, _textures)
-}*/
-/*func GenTextures(n int, textures ???){
+}
+func GenTextures(n int32, textures *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_textures := (*C.GLuint)(unsafe.Pointer(textures))
 	C.glGenTextures(_n, _textures)
-}*/
-/*func IsTexture(texture uint)bool{
+}
+func IsTexture(texture uint32)bool{
 	_texture := C.GLuint(texture)
 	returnvalue := C.glIsTexture(_texture)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-/*func DrawRangeElements(mode int, start uint, end uint, count int, whichtype int, indices ???){
+}
+func DrawRangeElements(mode int32, start uint32, end uint32, count int32, whichtype int32, indices uintptr){
 	_mode := C.GLenum(mode)
 	_start := C.GLuint(start)
 	_end := C.GLuint(end)
 	_count := C.GLsizei(count)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_indices := unsafe.Pointer(indices)
 	C.glDrawRangeElements(_mode, _start, _end, _count, _whichtype, _indices)
-}*/
-/*func TexImage3D(target int, level int, internalformat int, width int, height int, depth int, border int, format int, whichtype int, pixels ???){
+}
+func TexImage3D(target int32, level int32, internalformat int32, width int32, height int32, depth int32, border int32, format int32, whichtype int32, pixels uintptr){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_internalformat := C.GLint(internalformat)
@@ -1922,10 +1923,10 @@ return convreturnvalue
 	_border := C.GLint(border)
 	_format := C.GLenum(format)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_pixels := unsafe.Pointer(pixels)
 	C.glTexImage3D(_target, _level, _internalformat, _width, _height, _depth, _border, _format, _whichtype, _pixels)
-}*/
-/*func TexSubImage3D(target int, level int, xoffset int, yoffset int, zoffset int, width int, height int, depth int, format int, whichtype int, pixels ???){
+}
+func TexSubImage3D(target int32, level int32, xoffset int32, yoffset int32, zoffset int32, width int32, height int32, depth int32, format int32, whichtype int32, pixels uintptr){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_xoffset := C.GLint(xoffset)
@@ -1936,10 +1937,10 @@ return convreturnvalue
 	_depth := C.GLsizei(depth)
 	_format := C.GLenum(format)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_pixels := unsafe.Pointer(pixels)
 	C.glTexSubImage3D(_target, _level, _xoffset, _yoffset, _zoffset, _width, _height, _depth, _format, _whichtype, _pixels)
-}*/
-func CopyTexSubImage3D(target int, level int, xoffset int, yoffset int, zoffset int, x int, y int, width int, height int){
+}
+func CopyTexSubImage3D(target int32, level int32, xoffset int32, yoffset int32, zoffset int32, x int32, y int32, width int32, height int32){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_xoffset := C.GLint(xoffset)
@@ -1951,16 +1952,16 @@ func CopyTexSubImage3D(target int, level int, xoffset int, yoffset int, zoffset 
 	_height := C.GLsizei(height)
 	C.glCopyTexSubImage3D(_target, _level, _xoffset, _yoffset, _zoffset, _x, _y, _width, _height)
 }
-func ActiveTexture(texture int){
+func ActiveTexture(texture int32){
 	_texture := C.GLenum(texture)
 	C.glActiveTexture(_texture)
 }
 func SampleCoverage(value float32, invert bool){
 	_value := C.GLfloat(value)
-	_invert := C.GLboolean(1);if !invert{_invert=C.GLboolean(0)}
+	_invert := C.GLboolean(TRUE);if !invert{_invert=C.GLboolean(FALSE)}
 	C.glSampleCoverage(_value, _invert)
 }
-/*func CompressedTexImage3D(target int, level int, internalformat int, width int, height int, depth int, border int, imageSize int, data ???){
+func CompressedTexImage3D(target int32, level int32, internalformat int32, width int32, height int32, depth int32, border int32, imageSize int32, data uintptr){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_internalformat := C.GLenum(internalformat)
@@ -1969,10 +1970,10 @@ func SampleCoverage(value float32, invert bool){
 	_depth := C.GLsizei(depth)
 	_border := C.GLint(border)
 	_imageSize := C.GLsizei(imageSize)
-	panic()
+	_data := unsafe.Pointer(data)
 	C.glCompressedTexImage3D(_target, _level, _internalformat, _width, _height, _depth, _border, _imageSize, _data)
-}*/
-/*func CompressedTexImage2D(target int, level int, internalformat int, width int, height int, border int, imageSize int, data ???){
+}
+func CompressedTexImage2D(target int32, level int32, internalformat int32, width int32, height int32, border int32, imageSize int32, data uintptr){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_internalformat := C.GLenum(internalformat)
@@ -1980,20 +1981,20 @@ func SampleCoverage(value float32, invert bool){
 	_height := C.GLsizei(height)
 	_border := C.GLint(border)
 	_imageSize := C.GLsizei(imageSize)
-	panic()
+	_data := unsafe.Pointer(data)
 	C.glCompressedTexImage2D(_target, _level, _internalformat, _width, _height, _border, _imageSize, _data)
-}*/
-/*func CompressedTexImage1D(target int, level int, internalformat int, width int, border int, imageSize int, data ???){
+}
+func CompressedTexImage1D(target int32, level int32, internalformat int32, width int32, border int32, imageSize int32, data uintptr){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_internalformat := C.GLenum(internalformat)
 	_width := C.GLsizei(width)
 	_border := C.GLint(border)
 	_imageSize := C.GLsizei(imageSize)
-	panic()
+	_data := unsafe.Pointer(data)
 	C.glCompressedTexImage1D(_target, _level, _internalformat, _width, _border, _imageSize, _data)
-}*/
-/*func CompressedTexSubImage3D(target int, level int, xoffset int, yoffset int, zoffset int, width int, height int, depth int, format int, imageSize int, data ???){
+}
+func CompressedTexSubImage3D(target int32, level int32, xoffset int32, yoffset int32, zoffset int32, width int32, height int32, depth int32, format int32, imageSize int32, data uintptr){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_xoffset := C.GLint(xoffset)
@@ -2004,10 +2005,10 @@ func SampleCoverage(value float32, invert bool){
 	_depth := C.GLsizei(depth)
 	_format := C.GLenum(format)
 	_imageSize := C.GLsizei(imageSize)
-	panic()
+	_data := unsafe.Pointer(data)
 	C.glCompressedTexSubImage3D(_target, _level, _xoffset, _yoffset, _zoffset, _width, _height, _depth, _format, _imageSize, _data)
-}*/
-/*func CompressedTexSubImage2D(target int, level int, xoffset int, yoffset int, width int, height int, format int, imageSize int, data ???){
+}
+func CompressedTexSubImage2D(target int32, level int32, xoffset int32, yoffset int32, width int32, height int32, format int32, imageSize int32, data uintptr){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_xoffset := C.GLint(xoffset)
@@ -2016,40 +2017,40 @@ func SampleCoverage(value float32, invert bool){
 	_height := C.GLsizei(height)
 	_format := C.GLenum(format)
 	_imageSize := C.GLsizei(imageSize)
-	panic()
+	_data := unsafe.Pointer(data)
 	C.glCompressedTexSubImage2D(_target, _level, _xoffset, _yoffset, _width, _height, _format, _imageSize, _data)
-}*/
-/*func CompressedTexSubImage1D(target int, level int, xoffset int, width int, format int, imageSize int, data ???){
+}
+func CompressedTexSubImage1D(target int32, level int32, xoffset int32, width int32, format int32, imageSize int32, data uintptr){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_xoffset := C.GLint(xoffset)
 	_width := C.GLsizei(width)
 	_format := C.GLenum(format)
 	_imageSize := C.GLsizei(imageSize)
-	panic()
+	_data := unsafe.Pointer(data)
 	C.glCompressedTexSubImage1D(_target, _level, _xoffset, _width, _format, _imageSize, _data)
-}*/
-/*func GetCompressedTexImage(target int, level int, img ???){
+}
+/*func GetCompressedTexImage(target int32, level int32, img ???){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	panic()
 	C.glGetCompressedTexImage(_target, _level, _img)
 }*/
-func BlendFuncSeparate(sfactorRGB int, dfactorRGB int, sfactorAlpha int, dfactorAlpha int){
+func BlendFuncSeparate(sfactorRGB int32, dfactorRGB int32, sfactorAlpha int32, dfactorAlpha int32){
 	_sfactorRGB := C.GLenum(sfactorRGB)
 	_dfactorRGB := C.GLenum(dfactorRGB)
 	_sfactorAlpha := C.GLenum(sfactorAlpha)
 	_dfactorAlpha := C.GLenum(dfactorAlpha)
 	C.glBlendFuncSeparate(_sfactorRGB, _dfactorRGB, _sfactorAlpha, _dfactorAlpha)
 }
-/*func MultiDrawArrays(mode int, first ???, count ???, drawcount int){
+/*func MultiDrawArrays(mode int32, first *int32, count ???, drawcount int32){
 	_mode := C.GLenum(mode)
-	panic()
+	_first := (*C.GLint)(unsafe.Pointer(first))
 	panic()
 	_drawcount := C.GLsizei(drawcount)
 	C.glMultiDrawArrays(_mode, _first, _count, _drawcount)
 }*/
-/*func MultiDrawElements(mode int, count ???, whichtype int, indices ???, drawcount int){
+/*func MultiDrawElements(mode int32, count ???, whichtype int32, indices ???, drawcount int32){
 	_mode := C.GLenum(mode)
 	panic()
 	_whichtype := C.GLenum(whichtype)
@@ -2057,26 +2058,26 @@ func BlendFuncSeparate(sfactorRGB int, dfactorRGB int, sfactorAlpha int, dfactor
 	_drawcount := C.GLsizei(drawcount)
 	C.glMultiDrawElements(_mode, _count, _whichtype, _indices, _drawcount)
 }*/
-func PointParameterf(pname int, param float32){
+func PointParameterf(pname int32, param float32){
 	_pname := C.GLenum(pname)
 	_param := C.GLfloat(param)
 	C.glPointParameterf(_pname, _param)
 }
-/*func PointParameterfv(pname int, params ???){
+func PointParameterfv(pname int32, params *float32){
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLfloat)(unsafe.Pointer(params))
 	C.glPointParameterfv(_pname, _params)
-}*/
-func PointParameteri(pname int, param int){
+}
+func PointParameteri(pname int32, param int32){
 	_pname := C.GLenum(pname)
 	_param := C.GLint(param)
 	C.glPointParameteri(_pname, _param)
 }
-/*func PointParameteriv(pname int, params ???){
+func PointParameteriv(pname int32, params *int32){
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glPointParameteriv(_pname, _params)
-}*/
+}
 func BlendColor(red float32, green float32, blue float32, alpha float32){
 	_red := C.GLfloat(red)
 	_green := C.GLfloat(green)
@@ -2084,352 +2085,352 @@ func BlendColor(red float32, green float32, blue float32, alpha float32){
 	_alpha := C.GLfloat(alpha)
 	C.glBlendColor(_red, _green, _blue, _alpha)
 }
-func BlendEquation(mode int){
+func BlendEquation(mode int32){
 	_mode := C.GLenum(mode)
 	C.glBlendEquation(_mode)
 }
-/*func GenQueries(n int, ids ???){
+func GenQueries(n int32, ids *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_ids := (*C.GLuint)(unsafe.Pointer(ids))
 	C.glGenQueries(_n, _ids)
-}*/
-/*func DeleteQueries(n int, ids ???){
+}
+func DeleteQueries(n int32, ids *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_ids := (*C.GLuint)(unsafe.Pointer(ids))
 	C.glDeleteQueries(_n, _ids)
-}*/
-/*func IsQuery(id uint)bool{
+}
+func IsQuery(id uint32)bool{
 	_id := C.GLuint(id)
 	returnvalue := C.glIsQuery(_id)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-func BeginQuery(target int, id uint){
+}
+func BeginQuery(target int32, id uint32){
 	_target := C.GLenum(target)
 	_id := C.GLuint(id)
 	C.glBeginQuery(_target, _id)
 }
-func EndQuery(target int){
+func EndQuery(target int32){
 	_target := C.GLenum(target)
 	C.glEndQuery(_target)
 }
-/*func GetQueryiv(target int, pname int, params ???){
+func GetQueryiv(target int32, pname int32, params *int32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetQueryiv(_target, _pname, _params)
-}*/
-/*func GetQueryObjectiv(id uint, pname int, params ???){
+}
+func GetQueryObjectiv(id uint32, pname int32, params *int32){
 	_id := C.GLuint(id)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetQueryObjectiv(_id, _pname, _params)
-}*/
-/*func GetQueryObjectuiv(id uint, pname int, params ???){
+}
+func GetQueryObjectuiv(id uint32, pname int32, params *uint32){
 	_id := C.GLuint(id)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLuint)(unsafe.Pointer(params))
 	C.glGetQueryObjectuiv(_id, _pname, _params)
-}*/
-func BindBuffer(target int, buffer uint){
+}
+func BindBuffer(target int32, buffer uint32){
 	_target := C.GLenum(target)
 	_buffer := C.GLuint(buffer)
 	C.glBindBuffer(_target, _buffer)
 }
-/*func DeleteBuffers(n int, buffers ???){
+func DeleteBuffers(n int32, buffers *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_buffers := (*C.GLuint)(unsafe.Pointer(buffers))
 	C.glDeleteBuffers(_n, _buffers)
-}*/
-/*func GenBuffers(n int, buffers ???){
+}
+func GenBuffers(n int32, buffers *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_buffers := (*C.GLuint)(unsafe.Pointer(buffers))
 	C.glGenBuffers(_n, _buffers)
-}*/
-/*func IsBuffer(buffer uint)bool{
+}
+func IsBuffer(buffer uint32)bool{
 	_buffer := C.GLuint(buffer)
 	returnvalue := C.glIsBuffer(_buffer)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-/*func BufferData(target int, size int, data ???, usage int){
+}
+func BufferData(target int32, size int32, data uintptr, usage int32){
 	_target := C.GLenum(target)
 	_size := C.GLsizeiptr(size)
-	panic()
+	_data := unsafe.Pointer(data)
 	_usage := C.GLenum(usage)
 	C.glBufferData(_target, _size, _data, _usage)
-}*/
-/*func BufferSubData(target int, offset ???, size int, data ???){
+}
+func BufferSubData(target int32, offset uintptr, size int32, data uintptr){
 	_target := C.GLenum(target)
-	panic()
+	_offset :=C.GLintptr(offset)
 	_size := C.GLsizeiptr(size)
-	panic()
+	_data := unsafe.Pointer(data)
 	C.glBufferSubData(_target, _offset, _size, _data)
-}*/
-/*func GetBufferSubData(target int, offset ???, size int, data ???){
+}
+/*func GetBufferSubData(target int32, offset uintptr, size int32, data ???){
 	_target := C.GLenum(target)
-	panic()
+	_offset :=C.GLintptr(offset)
 	_size := C.GLsizeiptr(size)
 	panic()
 	C.glGetBufferSubData(_target, _offset, _size, _data)
 }*/
-/*func MapBuffer(target int, access int)???{
+/*func MapBuffer(target int32, access int32)???{
 	_target := C.GLenum(target)
 	_access := C.GLenum(access)
 	returnvalue := C.glMapBuffer(_target, _access)
 	panic()
 return convreturnvalue
 }*/
-/*func UnmapBuffer(target int)bool{
+func UnmapBuffer(target int32)bool{
 	_target := C.GLenum(target)
 	returnvalue := C.glUnmapBuffer(_target)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-/*func GetBufferParameteriv(target int, pname int, params ???){
+}
+func GetBufferParameteriv(target int32, pname int32, params *int32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetBufferParameteriv(_target, _pname, _params)
-}*/
-/*func GetBufferPointerv(target int, pname int, params ???){
+}
+/*func GetBufferPointerv(target int32, pname int32, params ???){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
 	panic()
 	C.glGetBufferPointerv(_target, _pname, _params)
 }*/
-func BlendEquationSeparate(modeRGB int, modeAlpha int){
+func BlendEquationSeparate(modeRGB int32, modeAlpha int32){
 	_modeRGB := C.GLenum(modeRGB)
 	_modeAlpha := C.GLenum(modeAlpha)
 	C.glBlendEquationSeparate(_modeRGB, _modeAlpha)
 }
-/*func DrawBuffers(n int, bufs ???){
+func DrawBuffers(n int32, bufs *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_bufs := (*C.GLenum)(unsafe.Pointer(bufs))
 	C.glDrawBuffers(_n, _bufs)
-}*/
-func StencilOpSeparate(face int, sfail int, dpfail int, dppass int){
+}
+func StencilOpSeparate(face int32, sfail int32, dpfail int32, dppass int32){
 	_face := C.GLenum(face)
 	_sfail := C.GLenum(sfail)
 	_dpfail := C.GLenum(dpfail)
 	_dppass := C.GLenum(dppass)
 	C.glStencilOpSeparate(_face, _sfail, _dpfail, _dppass)
 }
-func StencilFuncSeparate(face int, function int, ref int, mask uint){
+func StencilFuncSeparate(face int32, function int32, ref int32, mask uint32){
 	_face := C.GLenum(face)
 	_function := C.GLenum(function)
 	_ref := C.GLint(ref)
 	_mask := C.GLuint(mask)
 	C.glStencilFuncSeparate(_face, _function, _ref, _mask)
 }
-func StencilMaskSeparate(face int, mask uint){
+func StencilMaskSeparate(face int32, mask uint32){
 	_face := C.GLenum(face)
 	_mask := C.GLuint(mask)
 	C.glStencilMaskSeparate(_face, _mask)
 }
-func AttachShader(program uint, shader uint){
+func AttachShader(program uint32, shader uint32){
 	_program := C.GLuint(program)
 	_shader := C.GLuint(shader)
 	C.glAttachShader(_program, _shader)
 }
-/*func BindAttribLocation(program uint, index uint, name ???){
+func BindAttribLocation(program uint32, index uint32, name *byte){
 	_program := C.GLuint(program)
 	_index := C.GLuint(index)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	C.glBindAttribLocation(_program, _index, _name)
-}*/
-func CompileShader(shader uint){
+}
+func CompileShader(shader uint32){
 	_shader := C.GLuint(shader)
 	C.glCompileShader(_shader)
 }
-/*func CreateProgram()uint{
+func CreateProgram()uint32{
 	returnvalue := C.glCreateProgram()
-	panic()
+	convreturnvalue := uint32(returnvalue)
 return convreturnvalue
-}*/
-/*func CreateShader(whichtype int)uint{
+}
+func CreateShader(whichtype int32)uint32{
 	_whichtype := C.GLenum(whichtype)
 	returnvalue := C.glCreateShader(_whichtype)
-	panic()
+	convreturnvalue := uint32(returnvalue)
 return convreturnvalue
-}*/
-func DeleteProgram(program uint){
+}
+func DeleteProgram(program uint32){
 	_program := C.GLuint(program)
 	C.glDeleteProgram(_program)
 }
-func DeleteShader(shader uint){
+func DeleteShader(shader uint32){
 	_shader := C.GLuint(shader)
 	C.glDeleteShader(_shader)
 }
-func DetachShader(program uint, shader uint){
+func DetachShader(program uint32, shader uint32){
 	_program := C.GLuint(program)
 	_shader := C.GLuint(shader)
 	C.glDetachShader(_program, _shader)
 }
-func DisableVertexAttribArray(index uint){
+func DisableVertexAttribArray(index uint32){
 	_index := C.GLuint(index)
 	C.glDisableVertexAttribArray(_index)
 }
-func EnableVertexAttribArray(index uint){
+func EnableVertexAttribArray(index uint32){
 	_index := C.GLuint(index)
 	C.glEnableVertexAttribArray(_index)
 }
-/*func GetActiveAttrib(program uint, index uint, bufSize int, length int, size ???, whichtype ???, name int){
+/*func GetActiveAttrib(program uint32, index uint32, bufSize int32, length *int32, size *int32, whichtype ???, name *byte){
 	_program := C.GLuint(program)
 	_index := C.GLuint(index)
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_size := (*C.GLint)(unsafe.Pointer(size))
 	panic()
-	panic()
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	C.glGetActiveAttrib(_program, _index, _bufSize, _length, _size, _whichtype, _name)
 }*/
-/*func GetActiveUniform(program uint, index uint, bufSize int, length int, size ???, whichtype ???, name int){
+/*func GetActiveUniform(program uint32, index uint32, bufSize int32, length *int32, size *int32, whichtype ???, name *byte){
 	_program := C.GLuint(program)
 	_index := C.GLuint(index)
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_size := (*C.GLint)(unsafe.Pointer(size))
 	panic()
-	panic()
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	C.glGetActiveUniform(_program, _index, _bufSize, _length, _size, _whichtype, _name)
 }*/
-/*func GetAttachedShaders(program uint, maxCount int, count int, shaders ???){
+func GetAttachedShaders(program uint32, maxCount int32, count *int32, shaders *uint32){
 	_program := C.GLuint(program)
 	_maxCount := C.GLsizei(maxCount)
-	_count := C.GLsizei(count)
-	panic()
+	_count := (*C.GLsizei)(unsafe.Pointer(count))
+	_shaders := (*C.GLuint)(unsafe.Pointer(shaders))
 	C.glGetAttachedShaders(_program, _maxCount, _count, _shaders)
-}*/
-/*func GetAttribLocation(program uint, name ???)int{
+}
+func GetAttribLocation(program uint32, name *byte)int32{
 	_program := C.GLuint(program)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	returnvalue := C.glGetAttribLocation(_program, _name)
-	panic()
+	convreturnvalue := int32(returnvalue)
 return convreturnvalue
-}*/
-/*func GetProgramiv(program uint, pname int, params ???){
+}
+func GetProgramiv(program uint32, pname int32, params *int32){
 	_program := C.GLuint(program)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetProgramiv(_program, _pname, _params)
-}*/
-/*func GetProgramInfoLog(program uint, bufSize int, length int, infoLog int){
+}
+func GetProgramInfoLog(program uint32, bufSize int32, length *int32, infoLog *byte){
 	_program := C.GLuint(program)
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
-	panic()
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_infoLog := (*C.GLchar)(unsafe.Pointer(infoLog))
 	C.glGetProgramInfoLog(_program, _bufSize, _length, _infoLog)
-}*/
-/*func GetShaderiv(shader uint, pname int, params ???){
+}
+func GetShaderiv(shader uint32, pname int32, params *int32){
 	_shader := C.GLuint(shader)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetShaderiv(_shader, _pname, _params)
-}*/
-/*func GetShaderInfoLog(shader uint, bufSize int, length int, infoLog int){
+}
+func GetShaderInfoLog(shader uint32, bufSize int32, length *int32, infoLog *byte){
 	_shader := C.GLuint(shader)
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
-	panic()
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_infoLog := (*C.GLchar)(unsafe.Pointer(infoLog))
 	C.glGetShaderInfoLog(_shader, _bufSize, _length, _infoLog)
-}*/
-/*func GetShaderSource(shader uint, bufSize int, length int, source int){
+}
+func GetShaderSource(shader uint32, bufSize int32, length *int32, source *byte){
 	_shader := C.GLuint(shader)
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
-	panic()
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_source := (*C.GLchar)(unsafe.Pointer(source))
 	C.glGetShaderSource(_shader, _bufSize, _length, _source)
-}*/
-/*func GetUniformLocation(program uint, name ???)int{
+}
+func GetUniformLocation(program uint32, name *byte)int32{
 	_program := C.GLuint(program)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	returnvalue := C.glGetUniformLocation(_program, _name)
-	panic()
+	convreturnvalue := int32(returnvalue)
 return convreturnvalue
-}*/
-/*func GetUniformfv(program uint, location int, params ???){
+}
+func GetUniformfv(program uint32, location int32, params *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
-	panic()
+	_params := (*C.GLfloat)(unsafe.Pointer(params))
 	C.glGetUniformfv(_program, _location, _params)
-}*/
-/*func GetUniformiv(program uint, location int, params ???){
+}
+func GetUniformiv(program uint32, location int32, params *int32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetUniformiv(_program, _location, _params)
-}*/
-/*func GetVertexAttribdv(index uint, pname int, params ???){
+}
+func GetVertexAttribdv(index uint32, pname int32, params *float64){
 	_index := C.GLuint(index)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLdouble)(unsafe.Pointer(params))
 	C.glGetVertexAttribdv(_index, _pname, _params)
-}*/
-/*func GetVertexAttribfv(index uint, pname int, params ???){
+}
+func GetVertexAttribfv(index uint32, pname int32, params *float32){
 	_index := C.GLuint(index)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLfloat)(unsafe.Pointer(params))
 	C.glGetVertexAttribfv(_index, _pname, _params)
-}*/
-/*func GetVertexAttribiv(index uint, pname int, params ???){
+}
+func GetVertexAttribiv(index uint32, pname int32, params *int32){
 	_index := C.GLuint(index)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetVertexAttribiv(_index, _pname, _params)
-}*/
-/*func GetVertexAttribPointerv(index uint, pname int, pointer ???){
+}
+/*func GetVertexAttribPointerv(index uint32, pname int32, pointer ???){
 	_index := C.GLuint(index)
 	_pname := C.GLenum(pname)
 	panic()
 	C.glGetVertexAttribPointerv(_index, _pname, _pointer)
 }*/
-/*func IsProgram(program uint)bool{
+func IsProgram(program uint32)bool{
 	_program := C.GLuint(program)
 	returnvalue := C.glIsProgram(_program)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-/*func IsShader(shader uint)bool{
+}
+func IsShader(shader uint32)bool{
 	_shader := C.GLuint(shader)
 	returnvalue := C.glIsShader(_shader)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-func LinkProgram(program uint){
+}
+func LinkProgram(program uint32){
 	_program := C.GLuint(program)
 	C.glLinkProgram(_program)
 }
-/*func ShaderSource(shader uint, count int, string ???, length ???){
+func ShaderSource(shader uint32, count int32, whatstring **byte, length *int32){
 	_shader := C.GLuint(shader)
 	_count := C.GLsizei(count)
-	panic()
-	panic()
-	C.glShaderSource(_shader, _count, _string, _length)
-}*/
-func UseProgram(program uint){
+	_whatstring := (**C.GLchar)(unsafe.Pointer(whatstring))
+	_length := (*C.GLint)(unsafe.Pointer(length))
+	C.glShaderSource(_shader, _count, _whatstring, _length)
+}
+func UseProgram(program uint32){
 	_program := C.GLuint(program)
 	C.glUseProgram(_program)
 }
-func Uniform1f(location int, v0 float32){
+func Uniform1f(location int32, v0 float32){
 	_location := C.GLint(location)
 	_v0 := C.GLfloat(v0)
 	C.glUniform1f(_location, _v0)
 }
-func Uniform2f(location int, v0 float32, v1 float32){
+func Uniform2f(location int32, v0 float32, v1 float32){
 	_location := C.GLint(location)
 	_v0 := C.GLfloat(v0)
 	_v1 := C.GLfloat(v1)
 	C.glUniform2f(_location, _v0, _v1)
 }
-func Uniform3f(location int, v0 float32, v1 float32, v2 float32){
+func Uniform3f(location int32, v0 float32, v1 float32, v2 float32){
 	_location := C.GLint(location)
 	_v0 := C.GLfloat(v0)
 	_v1 := C.GLfloat(v1)
 	_v2 := C.GLfloat(v2)
 	C.glUniform3f(_location, _v0, _v1, _v2)
 }
-func Uniform4f(location int, v0 float32, v1 float32, v2 float32, v3 float32){
+func Uniform4f(location int32, v0 float32, v1 float32, v2 float32, v3 float32){
 	_location := C.GLint(location)
 	_v0 := C.GLfloat(v0)
 	_v1 := C.GLfloat(v1)
@@ -2437,25 +2438,25 @@ func Uniform4f(location int, v0 float32, v1 float32, v2 float32, v3 float32){
 	_v3 := C.GLfloat(v3)
 	C.glUniform4f(_location, _v0, _v1, _v2, _v3)
 }
-func Uniform1i(location int, v0 int){
+func Uniform1i(location int32, v0 int32){
 	_location := C.GLint(location)
 	_v0 := C.GLint(v0)
 	C.glUniform1i(_location, _v0)
 }
-func Uniform2i(location int, v0 int, v1 int){
+func Uniform2i(location int32, v0 int32, v1 int32){
 	_location := C.GLint(location)
 	_v0 := C.GLint(v0)
 	_v1 := C.GLint(v1)
 	C.glUniform2i(_location, _v0, _v1)
 }
-func Uniform3i(location int, v0 int, v1 int, v2 int){
+func Uniform3i(location int32, v0 int32, v1 int32, v2 int32){
 	_location := C.GLint(location)
 	_v0 := C.GLint(v0)
 	_v1 := C.GLint(v1)
 	_v2 := C.GLint(v2)
 	C.glUniform3i(_location, _v0, _v1, _v2)
 }
-func Uniform4i(location int, v0 int, v1 int, v2 int, v3 int){
+func Uniform4i(location int32, v0 int32, v1 int32, v2 int32, v3 int32){
 	_location := C.GLint(location)
 	_v0 := C.GLint(v0)
 	_v1 := C.GLint(v1)
@@ -2463,194 +2464,194 @@ func Uniform4i(location int, v0 int, v1 int, v2 int, v3 int){
 	_v3 := C.GLint(v3)
 	C.glUniform4i(_location, _v0, _v1, _v2, _v3)
 }
-/*func Uniform1fv(location int, count int, value ???){
+func Uniform1fv(location int32, count int32, value *float32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glUniform1fv(_location, _count, _value)
-}*/
-/*func Uniform2fv(location int, count int, value ???){
+}
+func Uniform2fv(location int32, count int32, value *float32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glUniform2fv(_location, _count, _value)
-}*/
-/*func Uniform3fv(location int, count int, value ???){
+}
+func Uniform3fv(location int32, count int32, value *float32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glUniform3fv(_location, _count, _value)
-}*/
-/*func Uniform4fv(location int, count int, value ???){
+}
+func Uniform4fv(location int32, count int32, value *float32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glUniform4fv(_location, _count, _value)
-}*/
-/*func Uniform1iv(location int, count int, value ???){
+}
+func Uniform1iv(location int32, count int32, value *int32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLint)(unsafe.Pointer(value))
 	C.glUniform1iv(_location, _count, _value)
-}*/
-/*func Uniform2iv(location int, count int, value ???){
+}
+func Uniform2iv(location int32, count int32, value *int32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLint)(unsafe.Pointer(value))
 	C.glUniform2iv(_location, _count, _value)
-}*/
-/*func Uniform3iv(location int, count int, value ???){
+}
+func Uniform3iv(location int32, count int32, value *int32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLint)(unsafe.Pointer(value))
 	C.glUniform3iv(_location, _count, _value)
-}*/
-/*func Uniform4iv(location int, count int, value ???){
+}
+func Uniform4iv(location int32, count int32, value *int32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLint)(unsafe.Pointer(value))
 	C.glUniform4iv(_location, _count, _value)
-}*/
-/*func UniformMatrix2fv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix2fv(location int32, count int32, transpose bool, value *float32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glUniformMatrix2fv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix3fv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix3fv(location int32, count int32, transpose bool, value *float32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glUniformMatrix3fv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix4fv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix4fv(location int32, count int32, transpose bool, value *float32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glUniformMatrix4fv(_location, _count, _transpose, _value)
-}*/
-func ValidateProgram(program uint){
+}
+func ValidateProgram(program uint32){
 	_program := C.GLuint(program)
 	C.glValidateProgram(_program)
 }
-func VertexAttrib1d(index uint, x float64){
+func VertexAttrib1d(index uint32, x float64){
 	_index := C.GLuint(index)
 	_x := C.GLdouble(x)
 	C.glVertexAttrib1d(_index, _x)
 }
-/*func VertexAttrib1dv(index uint, v ???){
+func VertexAttrib1dv(index uint32, v *float64){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLdouble)(unsafe.Pointer(v))
 	C.glVertexAttrib1dv(_index, _v)
-}*/
-func VertexAttrib1f(index uint, x float32){
+}
+func VertexAttrib1f(index uint32, x float32){
 	_index := C.GLuint(index)
 	_x := C.GLfloat(x)
 	C.glVertexAttrib1f(_index, _x)
 }
-/*func VertexAttrib1fv(index uint, v ???){
+func VertexAttrib1fv(index uint32, v *float32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLfloat)(unsafe.Pointer(v))
 	C.glVertexAttrib1fv(_index, _v)
-}*/
-/*func VertexAttrib1s(index uint, x ???){
+}
+/*func VertexAttrib1s(index uint32, x ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttrib1s(_index, _x)
 }*/
-/*func VertexAttrib1sv(index uint, v ???){
+/*func VertexAttrib1sv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttrib1sv(_index, _v)
 }*/
-func VertexAttrib2d(index uint, x float64, y float64){
+func VertexAttrib2d(index uint32, x float64, y float64){
 	_index := C.GLuint(index)
 	_x := C.GLdouble(x)
 	_y := C.GLdouble(y)
 	C.glVertexAttrib2d(_index, _x, _y)
 }
-/*func VertexAttrib2dv(index uint, v ???){
+func VertexAttrib2dv(index uint32, v *float64){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLdouble)(unsafe.Pointer(v))
 	C.glVertexAttrib2dv(_index, _v)
-}*/
-func VertexAttrib2f(index uint, x float32, y float32){
+}
+func VertexAttrib2f(index uint32, x float32, y float32){
 	_index := C.GLuint(index)
 	_x := C.GLfloat(x)
 	_y := C.GLfloat(y)
 	C.glVertexAttrib2f(_index, _x, _y)
 }
-/*func VertexAttrib2fv(index uint, v ???){
+func VertexAttrib2fv(index uint32, v *float32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLfloat)(unsafe.Pointer(v))
 	C.glVertexAttrib2fv(_index, _v)
-}*/
-/*func VertexAttrib2s(index uint, x ???, y ???){
+}
+/*func VertexAttrib2s(index uint32, x ???, y ???){
 	_index := C.GLuint(index)
 	panic()
 	panic()
 	C.glVertexAttrib2s(_index, _x, _y)
 }*/
-/*func VertexAttrib2sv(index uint, v ???){
+/*func VertexAttrib2sv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttrib2sv(_index, _v)
 }*/
-func VertexAttrib3d(index uint, x float64, y float64, z float64){
+func VertexAttrib3d(index uint32, x float64, y float64, z float64){
 	_index := C.GLuint(index)
 	_x := C.GLdouble(x)
 	_y := C.GLdouble(y)
 	_z := C.GLdouble(z)
 	C.glVertexAttrib3d(_index, _x, _y, _z)
 }
-/*func VertexAttrib3dv(index uint, v ???){
+func VertexAttrib3dv(index uint32, v *float64){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLdouble)(unsafe.Pointer(v))
 	C.glVertexAttrib3dv(_index, _v)
-}*/
-func VertexAttrib3f(index uint, x float32, y float32, z float32){
+}
+func VertexAttrib3f(index uint32, x float32, y float32, z float32){
 	_index := C.GLuint(index)
 	_x := C.GLfloat(x)
 	_y := C.GLfloat(y)
 	_z := C.GLfloat(z)
 	C.glVertexAttrib3f(_index, _x, _y, _z)
 }
-/*func VertexAttrib3fv(index uint, v ???){
+func VertexAttrib3fv(index uint32, v *float32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLfloat)(unsafe.Pointer(v))
 	C.glVertexAttrib3fv(_index, _v)
-}*/
-/*func VertexAttrib3s(index uint, x ???, y ???, z ???){
+}
+/*func VertexAttrib3s(index uint32, x ???, y ???, z ???){
 	_index := C.GLuint(index)
 	panic()
 	panic()
 	panic()
 	C.glVertexAttrib3s(_index, _x, _y, _z)
 }*/
-/*func VertexAttrib3sv(index uint, v ???){
+/*func VertexAttrib3sv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttrib3sv(_index, _v)
 }*/
-/*func VertexAttrib4Nbv(index uint, v ???){
+/*func VertexAttrib4Nbv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttrib4Nbv(_index, _v)
 }*/
-/*func VertexAttrib4Niv(index uint, v ???){
+func VertexAttrib4Niv(index uint32, v *int32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLint)(unsafe.Pointer(v))
 	C.glVertexAttrib4Niv(_index, _v)
-}*/
-/*func VertexAttrib4Nsv(index uint, v ???){
+}
+/*func VertexAttrib4Nsv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttrib4Nsv(_index, _v)
 }*/
-/*func VertexAttrib4Nub(index uint, x ???, y ???, z ???, w ???){
+/*func VertexAttrib4Nub(index uint32, x ???, y ???, z ???, w ???){
 	_index := C.GLuint(index)
 	panic()
 	panic()
@@ -2658,27 +2659,27 @@ func VertexAttrib3f(index uint, x float32, y float32, z float32){
 	panic()
 	C.glVertexAttrib4Nub(_index, _x, _y, _z, _w)
 }*/
-/*func VertexAttrib4Nubv(index uint, v ???){
+/*func VertexAttrib4Nubv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttrib4Nubv(_index, _v)
 }*/
-/*func VertexAttrib4Nuiv(index uint, v ???){
+func VertexAttrib4Nuiv(index uint32, v *uint32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLuint)(unsafe.Pointer(v))
 	C.glVertexAttrib4Nuiv(_index, _v)
-}*/
-/*func VertexAttrib4Nusv(index uint, v ???){
+}
+/*func VertexAttrib4Nusv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttrib4Nusv(_index, _v)
 }*/
-/*func VertexAttrib4bv(index uint, v ???){
+/*func VertexAttrib4bv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttrib4bv(_index, _v)
 }*/
-func VertexAttrib4d(index uint, x float64, y float64, z float64, w float64){
+func VertexAttrib4d(index uint32, x float64, y float64, z float64, w float64){
 	_index := C.GLuint(index)
 	_x := C.GLdouble(x)
 	_y := C.GLdouble(y)
@@ -2686,12 +2687,12 @@ func VertexAttrib4d(index uint, x float64, y float64, z float64, w float64){
 	_w := C.GLdouble(w)
 	C.glVertexAttrib4d(_index, _x, _y, _z, _w)
 }
-/*func VertexAttrib4dv(index uint, v ???){
+func VertexAttrib4dv(index uint32, v *float64){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLdouble)(unsafe.Pointer(v))
 	C.glVertexAttrib4dv(_index, _v)
-}*/
-func VertexAttrib4f(index uint, x float32, y float32, z float32, w float32){
+}
+func VertexAttrib4f(index uint32, x float32, y float32, z float32, w float32){
 	_index := C.GLuint(index)
 	_x := C.GLfloat(x)
 	_y := C.GLfloat(y)
@@ -2699,17 +2700,17 @@ func VertexAttrib4f(index uint, x float32, y float32, z float32, w float32){
 	_w := C.GLfloat(w)
 	C.glVertexAttrib4f(_index, _x, _y, _z, _w)
 }
-/*func VertexAttrib4fv(index uint, v ???){
+func VertexAttrib4fv(index uint32, v *float32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLfloat)(unsafe.Pointer(v))
 	C.glVertexAttrib4fv(_index, _v)
-}*/
-/*func VertexAttrib4iv(index uint, v ???){
+}
+func VertexAttrib4iv(index uint32, v *int32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLint)(unsafe.Pointer(v))
 	C.glVertexAttrib4iv(_index, _v)
-}*/
-/*func VertexAttrib4s(index uint, x ???, y ???, z ???, w ???){
+}
+/*func VertexAttrib4s(index uint32, x ???, y ???, z ???, w ???){
 	_index := C.GLuint(index)
 	panic()
 	panic()
@@ -2717,158 +2718,158 @@ func VertexAttrib4f(index uint, x float32, y float32, z float32, w float32){
 	panic()
 	C.glVertexAttrib4s(_index, _x, _y, _z, _w)
 }*/
-/*func VertexAttrib4sv(index uint, v ???){
+/*func VertexAttrib4sv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttrib4sv(_index, _v)
 }*/
-/*func VertexAttrib4ubv(index uint, v ???){
+/*func VertexAttrib4ubv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttrib4ubv(_index, _v)
 }*/
-/*func VertexAttrib4uiv(index uint, v ???){
+func VertexAttrib4uiv(index uint32, v *uint32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLuint)(unsafe.Pointer(v))
 	C.glVertexAttrib4uiv(_index, _v)
-}*/
-/*func VertexAttrib4usv(index uint, v ???){
+}
+/*func VertexAttrib4usv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttrib4usv(_index, _v)
 }*/
-/*func VertexAttribPointer(index uint, size int, whichtype int, normalized bool, stride int, pointer ???){
+func VertexAttribPointer(index uint32, size int32, whichtype int32, normalized bool, stride int32, pointer uintptr){
 	_index := C.GLuint(index)
 	_size := C.GLint(size)
 	_whichtype := C.GLenum(whichtype)
-	_normalized := C.GLboolean(1);if !normalized{_normalized=C.GLboolean(0)}
+	_normalized := C.GLboolean(TRUE);if !normalized{_normalized=C.GLboolean(FALSE)}
 	_stride := C.GLsizei(stride)
-	panic()
+	_pointer := unsafe.Pointer(pointer)
 	C.glVertexAttribPointer(_index, _size, _whichtype, _normalized, _stride, _pointer)
-}*/
-/*func UniformMatrix2x3fv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix2x3fv(location int32, count int32, transpose bool, value *float32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glUniformMatrix2x3fv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix3x2fv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix3x2fv(location int32, count int32, transpose bool, value *float32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glUniformMatrix3x2fv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix2x4fv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix2x4fv(location int32, count int32, transpose bool, value *float32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glUniformMatrix2x4fv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix4x2fv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix4x2fv(location int32, count int32, transpose bool, value *float32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glUniformMatrix4x2fv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix3x4fv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix3x4fv(location int32, count int32, transpose bool, value *float32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glUniformMatrix3x4fv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix4x3fv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix4x3fv(location int32, count int32, transpose bool, value *float32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glUniformMatrix4x3fv(_location, _count, _transpose, _value)
-}*/
-func ColorMaski(index uint, r bool, g bool, b bool, a bool){
+}
+func ColorMaski(index uint32, r bool, g bool, b bool, a bool){
 	_index := C.GLuint(index)
-	_r := C.GLboolean(1);if !r{_r=C.GLboolean(0)}
-	_g := C.GLboolean(1);if !g{_g=C.GLboolean(0)}
-	_b := C.GLboolean(1);if !b{_b=C.GLboolean(0)}
-	_a := C.GLboolean(1);if !a{_a=C.GLboolean(0)}
+	_r := C.GLboolean(TRUE);if !r{_r=C.GLboolean(FALSE)}
+	_g := C.GLboolean(TRUE);if !g{_g=C.GLboolean(FALSE)}
+	_b := C.GLboolean(TRUE);if !b{_b=C.GLboolean(FALSE)}
+	_a := C.GLboolean(TRUE);if !a{_a=C.GLboolean(FALSE)}
 	C.glColorMaski(_index, _r, _g, _b, _a)
 }
-/*func GetBooleani_v(target int, index uint, data ???){
+/*func GetBooleani_v(target int32, index uint32, data ???){
 	_target := C.GLenum(target)
 	_index := C.GLuint(index)
 	panic()
 	C.glGetBooleani_v(_target, _index, _data)
 }*/
-/*func GetIntegeri_v(target int, index uint, data ???){
+func GetIntegeri_v(target int32, index uint32, data *int32){
 	_target := C.GLenum(target)
 	_index := C.GLuint(index)
-	panic()
+	_data := (*C.GLint)(unsafe.Pointer(data))
 	C.glGetIntegeri_v(_target, _index, _data)
-}*/
-func Enablei(target int, index uint){
+}
+func Enablei(target int32, index uint32){
 	_target := C.GLenum(target)
 	_index := C.GLuint(index)
 	C.glEnablei(_target, _index)
 }
-func Disablei(target int, index uint){
+func Disablei(target int32, index uint32){
 	_target := C.GLenum(target)
 	_index := C.GLuint(index)
 	C.glDisablei(_target, _index)
 }
-/*func IsEnabledi(target int, index uint)bool{
+func IsEnabledi(target int32, index uint32)bool{
 	_target := C.GLenum(target)
 	_index := C.GLuint(index)
 	returnvalue := C.glIsEnabledi(_target, _index)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-func BeginTransformFeedback(primitiveMode int){
+}
+func BeginTransformFeedback(primitiveMode int32){
 	_primitiveMode := C.GLenum(primitiveMode)
 	C.glBeginTransformFeedback(_primitiveMode)
 }
 func EndTransformFeedback(){
 	C.glEndTransformFeedback()
 }
-/*func BindBufferRange(target int, index uint, buffer uint, offset ???, size int){
+func BindBufferRange(target int32, index uint32, buffer uint32, offset uintptr, size int32){
 	_target := C.GLenum(target)
 	_index := C.GLuint(index)
 	_buffer := C.GLuint(buffer)
-	panic()
+	_offset :=C.GLintptr(offset)
 	_size := C.GLsizeiptr(size)
 	C.glBindBufferRange(_target, _index, _buffer, _offset, _size)
-}*/
-func BindBufferBase(target int, index uint, buffer uint){
+}
+func BindBufferBase(target int32, index uint32, buffer uint32){
 	_target := C.GLenum(target)
 	_index := C.GLuint(index)
 	_buffer := C.GLuint(buffer)
 	C.glBindBufferBase(_target, _index, _buffer)
 }
-/*func TransformFeedbackVaryings(program uint, count int, varyings ???, bufferMode int){
+func TransformFeedbackVaryings(program uint32, count int32, varyings **byte, bufferMode int32){
 	_program := C.GLuint(program)
 	_count := C.GLsizei(count)
-	panic()
+	_varyings := (**C.GLchar)(unsafe.Pointer(varyings))
 	_bufferMode := C.GLenum(bufferMode)
 	C.glTransformFeedbackVaryings(_program, _count, _varyings, _bufferMode)
-}*/
-/*func GetTransformFeedbackVarying(program uint, index uint, bufSize int, length int, size int, whichtype ???, name int){
+}
+/*func GetTransformFeedbackVarying(program uint32, index uint32, bufSize int32, length *int32, size *int32, whichtype ???, name *byte){
 	_program := C.GLuint(program)
 	_index := C.GLuint(index)
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
-	_size := C.GLsizei(size)
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_size := (*C.GLsizei)(unsafe.Pointer(size))
 	panic()
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	C.glGetTransformFeedbackVarying(_program, _index, _bufSize, _length, _size, _whichtype, _name)
 }*/
-func ClampColor(target int, clamp int){
+func ClampColor(target int32, clamp int32){
 	_target := C.GLenum(target)
 	_clamp := C.GLenum(clamp)
 	C.glClampColor(_target, _clamp)
 }
-func BeginConditionalRender(id uint, mode int){
+func BeginConditionalRender(id uint32, mode int32){
 	_id := C.GLuint(id)
 	_mode := C.GLenum(mode)
 	C.glBeginConditionalRender(_id, _mode)
@@ -2876,45 +2877,45 @@ func BeginConditionalRender(id uint, mode int){
 func EndConditionalRender(){
 	C.glEndConditionalRender()
 }
-/*func VertexAttribIPointer(index uint, size int, whichtype int, stride int, pointer ???){
+func VertexAttribIPointer(index uint32, size int32, whichtype int32, stride int32, pointer uintptr){
 	_index := C.GLuint(index)
 	_size := C.GLint(size)
 	_whichtype := C.GLenum(whichtype)
 	_stride := C.GLsizei(stride)
-	panic()
+	_pointer := unsafe.Pointer(pointer)
 	C.glVertexAttribIPointer(_index, _size, _whichtype, _stride, _pointer)
-}*/
-/*func GetVertexAttribIiv(index uint, pname int, params ???){
+}
+func GetVertexAttribIiv(index uint32, pname int32, params *int32){
 	_index := C.GLuint(index)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetVertexAttribIiv(_index, _pname, _params)
-}*/
-/*func GetVertexAttribIuiv(index uint, pname int, params ???){
+}
+func GetVertexAttribIuiv(index uint32, pname int32, params *uint32){
 	_index := C.GLuint(index)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLuint)(unsafe.Pointer(params))
 	C.glGetVertexAttribIuiv(_index, _pname, _params)
-}*/
-func VertexAttribI1i(index uint, x int){
+}
+func VertexAttribI1i(index uint32, x int32){
 	_index := C.GLuint(index)
 	_x := C.GLint(x)
 	C.glVertexAttribI1i(_index, _x)
 }
-func VertexAttribI2i(index uint, x int, y int){
+func VertexAttribI2i(index uint32, x int32, y int32){
 	_index := C.GLuint(index)
 	_x := C.GLint(x)
 	_y := C.GLint(y)
 	C.glVertexAttribI2i(_index, _x, _y)
 }
-func VertexAttribI3i(index uint, x int, y int, z int){
+func VertexAttribI3i(index uint32, x int32, y int32, z int32){
 	_index := C.GLuint(index)
 	_x := C.GLint(x)
 	_y := C.GLint(y)
 	_z := C.GLint(z)
 	C.glVertexAttribI3i(_index, _x, _y, _z)
 }
-func VertexAttribI4i(index uint, x int, y int, z int, w int){
+func VertexAttribI4i(index uint32, x int32, y int32, z int32, w int32){
 	_index := C.GLuint(index)
 	_x := C.GLint(x)
 	_y := C.GLint(y)
@@ -2922,25 +2923,25 @@ func VertexAttribI4i(index uint, x int, y int, z int, w int){
 	_w := C.GLint(w)
 	C.glVertexAttribI4i(_index, _x, _y, _z, _w)
 }
-func VertexAttribI1ui(index uint, x uint){
+func VertexAttribI1ui(index uint32, x uint32){
 	_index := C.GLuint(index)
 	_x := C.GLuint(x)
 	C.glVertexAttribI1ui(_index, _x)
 }
-func VertexAttribI2ui(index uint, x uint, y uint){
+func VertexAttribI2ui(index uint32, x uint32, y uint32){
 	_index := C.GLuint(index)
 	_x := C.GLuint(x)
 	_y := C.GLuint(y)
 	C.glVertexAttribI2ui(_index, _x, _y)
 }
-func VertexAttribI3ui(index uint, x uint, y uint, z uint){
+func VertexAttribI3ui(index uint32, x uint32, y uint32, z uint32){
 	_index := C.GLuint(index)
 	_x := C.GLuint(x)
 	_y := C.GLuint(y)
 	_z := C.GLuint(z)
 	C.glVertexAttribI3ui(_index, _x, _y, _z)
 }
-func VertexAttribI4ui(index uint, x uint, y uint, z uint, w uint){
+func VertexAttribI4ui(index uint32, x uint32, y uint32, z uint32, w uint32){
 	_index := C.GLuint(index)
 	_x := C.GLuint(x)
 	_y := C.GLuint(y)
@@ -2948,104 +2949,104 @@ func VertexAttribI4ui(index uint, x uint, y uint, z uint, w uint){
 	_w := C.GLuint(w)
 	C.glVertexAttribI4ui(_index, _x, _y, _z, _w)
 }
-/*func VertexAttribI1iv(index uint, v ???){
+func VertexAttribI1iv(index uint32, v *int32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLint)(unsafe.Pointer(v))
 	C.glVertexAttribI1iv(_index, _v)
-}*/
-/*func VertexAttribI2iv(index uint, v ???){
+}
+func VertexAttribI2iv(index uint32, v *int32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLint)(unsafe.Pointer(v))
 	C.glVertexAttribI2iv(_index, _v)
-}*/
-/*func VertexAttribI3iv(index uint, v ???){
+}
+func VertexAttribI3iv(index uint32, v *int32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLint)(unsafe.Pointer(v))
 	C.glVertexAttribI3iv(_index, _v)
-}*/
-/*func VertexAttribI4iv(index uint, v ???){
+}
+func VertexAttribI4iv(index uint32, v *int32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLint)(unsafe.Pointer(v))
 	C.glVertexAttribI4iv(_index, _v)
-}*/
-/*func VertexAttribI1uiv(index uint, v ???){
+}
+func VertexAttribI1uiv(index uint32, v *uint32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLuint)(unsafe.Pointer(v))
 	C.glVertexAttribI1uiv(_index, _v)
-}*/
-/*func VertexAttribI2uiv(index uint, v ???){
+}
+func VertexAttribI2uiv(index uint32, v *uint32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLuint)(unsafe.Pointer(v))
 	C.glVertexAttribI2uiv(_index, _v)
-}*/
-/*func VertexAttribI3uiv(index uint, v ???){
+}
+func VertexAttribI3uiv(index uint32, v *uint32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLuint)(unsafe.Pointer(v))
 	C.glVertexAttribI3uiv(_index, _v)
-}*/
-/*func VertexAttribI4uiv(index uint, v ???){
+}
+func VertexAttribI4uiv(index uint32, v *uint32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLuint)(unsafe.Pointer(v))
 	C.glVertexAttribI4uiv(_index, _v)
-}*/
-/*func VertexAttribI4bv(index uint, v ???){
+}
+/*func VertexAttribI4bv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttribI4bv(_index, _v)
 }*/
-/*func VertexAttribI4sv(index uint, v ???){
+/*func VertexAttribI4sv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttribI4sv(_index, _v)
 }*/
-/*func VertexAttribI4ubv(index uint, v ???){
+/*func VertexAttribI4ubv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttribI4ubv(_index, _v)
 }*/
-/*func VertexAttribI4usv(index uint, v ???){
+/*func VertexAttribI4usv(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttribI4usv(_index, _v)
 }*/
-/*func GetUniformuiv(program uint, location int, params ???){
+func GetUniformuiv(program uint32, location int32, params *uint32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
-	panic()
+	_params := (*C.GLuint)(unsafe.Pointer(params))
 	C.glGetUniformuiv(_program, _location, _params)
-}*/
-/*func BindFragDataLocation(program uint, color uint, name ???){
+}
+func BindFragDataLocation(program uint32, color uint32, name *byte){
 	_program := C.GLuint(program)
 	_color := C.GLuint(color)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	C.glBindFragDataLocation(_program, _color, _name)
-}*/
-/*func GetFragDataLocation(program uint, name ???)int{
+}
+func GetFragDataLocation(program uint32, name *byte)int32{
 	_program := C.GLuint(program)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	returnvalue := C.glGetFragDataLocation(_program, _name)
-	panic()
+	convreturnvalue := int32(returnvalue)
 return convreturnvalue
-}*/
-func Uniform1ui(location int, v0 uint){
+}
+func Uniform1ui(location int32, v0 uint32){
 	_location := C.GLint(location)
 	_v0 := C.GLuint(v0)
 	C.glUniform1ui(_location, _v0)
 }
-func Uniform2ui(location int, v0 uint, v1 uint){
+func Uniform2ui(location int32, v0 uint32, v1 uint32){
 	_location := C.GLint(location)
 	_v0 := C.GLuint(v0)
 	_v1 := C.GLuint(v1)
 	C.glUniform2ui(_location, _v0, _v1)
 }
-func Uniform3ui(location int, v0 uint, v1 uint, v2 uint){
+func Uniform3ui(location int32, v0 uint32, v1 uint32, v2 uint32){
 	_location := C.GLint(location)
 	_v0 := C.GLuint(v0)
 	_v1 := C.GLuint(v1)
 	_v2 := C.GLuint(v2)
 	C.glUniform3ui(_location, _v0, _v1, _v2)
 }
-func Uniform4ui(location int, v0 uint, v1 uint, v2 uint, v3 uint){
+func Uniform4ui(location int32, v0 uint32, v1 uint32, v2 uint32, v3 uint32){
 	_location := C.GLint(location)
 	_v0 := C.GLuint(v0)
 	_v1 := C.GLuint(v1)
@@ -3053,148 +3054,148 @@ func Uniform4ui(location int, v0 uint, v1 uint, v2 uint, v3 uint){
 	_v3 := C.GLuint(v3)
 	C.glUniform4ui(_location, _v0, _v1, _v2, _v3)
 }
-/*func Uniform1uiv(location int, count int, value ???){
+func Uniform1uiv(location int32, count int32, value *uint32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLuint)(unsafe.Pointer(value))
 	C.glUniform1uiv(_location, _count, _value)
-}*/
-/*func Uniform2uiv(location int, count int, value ???){
+}
+func Uniform2uiv(location int32, count int32, value *uint32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLuint)(unsafe.Pointer(value))
 	C.glUniform2uiv(_location, _count, _value)
-}*/
-/*func Uniform3uiv(location int, count int, value ???){
+}
+func Uniform3uiv(location int32, count int32, value *uint32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLuint)(unsafe.Pointer(value))
 	C.glUniform3uiv(_location, _count, _value)
-}*/
-/*func Uniform4uiv(location int, count int, value ???){
+}
+func Uniform4uiv(location int32, count int32, value *uint32){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLuint)(unsafe.Pointer(value))
 	C.glUniform4uiv(_location, _count, _value)
-}*/
-/*func TexParameterIiv(target int, pname int, params ???){
+}
+func TexParameterIiv(target int32, pname int32, params *int32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glTexParameterIiv(_target, _pname, _params)
-}*/
-/*func TexParameterIuiv(target int, pname int, params ???){
+}
+func TexParameterIuiv(target int32, pname int32, params *uint32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLuint)(unsafe.Pointer(params))
 	C.glTexParameterIuiv(_target, _pname, _params)
-}*/
-/*func GetTexParameterIiv(target int, pname int, params ???){
+}
+func GetTexParameterIiv(target int32, pname int32, params *int32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetTexParameterIiv(_target, _pname, _params)
-}*/
-/*func GetTexParameterIuiv(target int, pname int, params ???){
+}
+func GetTexParameterIuiv(target int32, pname int32, params *uint32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLuint)(unsafe.Pointer(params))
 	C.glGetTexParameterIuiv(_target, _pname, _params)
-}*/
-/*func ClearBufferiv(buffer int, drawbuffer int, value ???){
+}
+func ClearBufferiv(buffer int32, drawbuffer int32, value *int32){
 	_buffer := C.GLenum(buffer)
 	_drawbuffer := C.GLint(drawbuffer)
-	panic()
+	_value := (*C.GLint)(unsafe.Pointer(value))
 	C.glClearBufferiv(_buffer, _drawbuffer, _value)
-}*/
-/*func ClearBufferuiv(buffer int, drawbuffer int, value ???){
+}
+func ClearBufferuiv(buffer int32, drawbuffer int32, value *uint32){
 	_buffer := C.GLenum(buffer)
 	_drawbuffer := C.GLint(drawbuffer)
-	panic()
+	_value := (*C.GLuint)(unsafe.Pointer(value))
 	C.glClearBufferuiv(_buffer, _drawbuffer, _value)
-}*/
-/*func ClearBufferfv(buffer int, drawbuffer int, value ???){
+}
+func ClearBufferfv(buffer int32, drawbuffer int32, value *float32){
 	_buffer := C.GLenum(buffer)
 	_drawbuffer := C.GLint(drawbuffer)
-	panic()
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glClearBufferfv(_buffer, _drawbuffer, _value)
-}*/
-func ClearBufferfi(buffer int, drawbuffer int, depth float32, stencil int){
+}
+func ClearBufferfi(buffer int32, drawbuffer int32, depth float32, stencil int32){
 	_buffer := C.GLenum(buffer)
 	_drawbuffer := C.GLint(drawbuffer)
 	_depth := C.GLfloat(depth)
 	_stencil := C.GLint(stencil)
 	C.glClearBufferfi(_buffer, _drawbuffer, _depth, _stencil)
 }
-/*func GetStringi(name int, index uint)???{
+/*func GetStringi(name int32, index uint32)???{
 	_name := C.GLenum(name)
 	_index := C.GLuint(index)
 	returnvalue := C.glGetStringi(_name, _index)
 	panic()
 return convreturnvalue
 }*/
-/*func IsRenderbuffer(renderbuffer uint)bool{
+func IsRenderbuffer(renderbuffer uint32)bool{
 	_renderbuffer := C.GLuint(renderbuffer)
 	returnvalue := C.glIsRenderbuffer(_renderbuffer)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-func BindRenderbuffer(target int, renderbuffer uint){
+}
+func BindRenderbuffer(target int32, renderbuffer uint32){
 	_target := C.GLenum(target)
 	_renderbuffer := C.GLuint(renderbuffer)
 	C.glBindRenderbuffer(_target, _renderbuffer)
 }
-/*func DeleteRenderbuffers(n int, renderbuffers ???){
+func DeleteRenderbuffers(n int32, renderbuffers *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_renderbuffers := (*C.GLuint)(unsafe.Pointer(renderbuffers))
 	C.glDeleteRenderbuffers(_n, _renderbuffers)
-}*/
-/*func GenRenderbuffers(n int, renderbuffers ???){
+}
+func GenRenderbuffers(n int32, renderbuffers *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_renderbuffers := (*C.GLuint)(unsafe.Pointer(renderbuffers))
 	C.glGenRenderbuffers(_n, _renderbuffers)
-}*/
-func RenderbufferStorage(target int, internalformat int, width int, height int){
+}
+func RenderbufferStorage(target int32, internalformat int32, width int32, height int32){
 	_target := C.GLenum(target)
 	_internalformat := C.GLenum(internalformat)
 	_width := C.GLsizei(width)
 	_height := C.GLsizei(height)
 	C.glRenderbufferStorage(_target, _internalformat, _width, _height)
 }
-/*func GetRenderbufferParameteriv(target int, pname int, params ???){
+func GetRenderbufferParameteriv(target int32, pname int32, params *int32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetRenderbufferParameteriv(_target, _pname, _params)
-}*/
-/*func IsFramebuffer(framebuffer uint)bool{
+}
+func IsFramebuffer(framebuffer uint32)bool{
 	_framebuffer := C.GLuint(framebuffer)
 	returnvalue := C.glIsFramebuffer(_framebuffer)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-func BindFramebuffer(target int, framebuffer uint){
+}
+func BindFramebuffer(target int32, framebuffer uint32){
 	_target := C.GLenum(target)
 	_framebuffer := C.GLuint(framebuffer)
 	C.glBindFramebuffer(_target, _framebuffer)
 }
-/*func DeleteFramebuffers(n int, framebuffers ???){
+func DeleteFramebuffers(n int32, framebuffers *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_framebuffers := (*C.GLuint)(unsafe.Pointer(framebuffers))
 	C.glDeleteFramebuffers(_n, _framebuffers)
-}*/
-/*func GenFramebuffers(n int, framebuffers ???){
+}
+func GenFramebuffers(n int32, framebuffers *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_framebuffers := (*C.GLuint)(unsafe.Pointer(framebuffers))
 	C.glGenFramebuffers(_n, _framebuffers)
-}*/
-func CheckFramebufferStatus(target int)int{
+}
+func CheckFramebufferStatus(target int32)int32{
 	_target := C.GLenum(target)
 	returnvalue := C.glCheckFramebufferStatus(_target)
-	convreturnvalue := int(returnvalue)
+	convreturnvalue := int32(returnvalue)
 return convreturnvalue
 }
-func FramebufferTexture1D(target int, attachment int, textarget int, texture uint, level int){
+func FramebufferTexture1D(target int32, attachment int32, textarget int32, texture uint32, level int32){
 	_target := C.GLenum(target)
 	_attachment := C.GLenum(attachment)
 	_textarget := C.GLenum(textarget)
@@ -3202,7 +3203,7 @@ func FramebufferTexture1D(target int, attachment int, textarget int, texture uin
 	_level := C.GLint(level)
 	C.glFramebufferTexture1D(_target, _attachment, _textarget, _texture, _level)
 }
-func FramebufferTexture2D(target int, attachment int, textarget int, texture uint, level int){
+func FramebufferTexture2D(target int32, attachment int32, textarget int32, texture uint32, level int32){
 	_target := C.GLenum(target)
 	_attachment := C.GLenum(attachment)
 	_textarget := C.GLenum(textarget)
@@ -3210,7 +3211,7 @@ func FramebufferTexture2D(target int, attachment int, textarget int, texture uin
 	_level := C.GLint(level)
 	C.glFramebufferTexture2D(_target, _attachment, _textarget, _texture, _level)
 }
-func FramebufferTexture3D(target int, attachment int, textarget int, texture uint, level int, zoffset int){
+func FramebufferTexture3D(target int32, attachment int32, textarget int32, texture uint32, level int32, zoffset int32){
 	_target := C.GLenum(target)
 	_attachment := C.GLenum(attachment)
 	_textarget := C.GLenum(textarget)
@@ -3219,25 +3220,25 @@ func FramebufferTexture3D(target int, attachment int, textarget int, texture uin
 	_zoffset := C.GLint(zoffset)
 	C.glFramebufferTexture3D(_target, _attachment, _textarget, _texture, _level, _zoffset)
 }
-func FramebufferRenderbuffer(target int, attachment int, renderbuffertarget int, renderbuffer uint){
+func FramebufferRenderbuffer(target int32, attachment int32, renderbuffertarget int32, renderbuffer uint32){
 	_target := C.GLenum(target)
 	_attachment := C.GLenum(attachment)
 	_renderbuffertarget := C.GLenum(renderbuffertarget)
 	_renderbuffer := C.GLuint(renderbuffer)
 	C.glFramebufferRenderbuffer(_target, _attachment, _renderbuffertarget, _renderbuffer)
 }
-/*func GetFramebufferAttachmentParameteriv(target int, attachment int, pname int, params ???){
+func GetFramebufferAttachmentParameteriv(target int32, attachment int32, pname int32, params *int32){
 	_target := C.GLenum(target)
 	_attachment := C.GLenum(attachment)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetFramebufferAttachmentParameteriv(_target, _attachment, _pname, _params)
-}*/
-func GenerateMipmap(target int){
+}
+func GenerateMipmap(target int32){
 	_target := C.GLenum(target)
 	C.glGenerateMipmap(_target)
 }
-func BlitFramebuffer(srcX0 int, srcY0 int, srcX1 int, srcY1 int, dstX0 int, dstY0 int, dstX1 int, dstY1 int, mask uint, filter int){
+func BlitFramebuffer(srcX0 int32, srcY0 int32, srcX1 int32, srcY1 int32, dstX0 int32, dstY0 int32, dstX1 int32, dstY1 int32, mask uint32, filter int32){
 	_srcX0 := C.GLint(srcX0)
 	_srcY0 := C.GLint(srcY0)
 	_srcX1 := C.GLint(srcX1)
@@ -3250,7 +3251,7 @@ func BlitFramebuffer(srcX0 int, srcY0 int, srcX1 int, srcY1 int, dstX0 int, dstY
 	_filter := C.GLenum(filter)
 	C.glBlitFramebuffer(_srcX0, _srcY0, _srcX1, _srcY1, _dstX0, _dstY0, _dstX1, _dstY1, _mask, _filter)
 }
-func RenderbufferStorageMultisample(target int, samples int, internalformat int, width int, height int){
+func RenderbufferStorageMultisample(target int32, samples int32, internalformat int32, width int32, height int32){
 	_target := C.GLenum(target)
 	_samples := C.GLsizei(samples)
 	_internalformat := C.GLenum(internalformat)
@@ -3258,7 +3259,7 @@ func RenderbufferStorageMultisample(target int, samples int, internalformat int,
 	_height := C.GLsizei(height)
 	C.glRenderbufferStorageMultisample(_target, _samples, _internalformat, _width, _height)
 }
-func FramebufferTextureLayer(target int, attachment int, texture uint, level int, layer int){
+func FramebufferTextureLayer(target int32, attachment int32, texture uint32, level int32, layer int32){
 	_target := C.GLenum(target)
 	_attachment := C.GLenum(attachment)
 	_texture := C.GLuint(texture)
@@ -3266,166 +3267,166 @@ func FramebufferTextureLayer(target int, attachment int, texture uint, level int
 	_layer := C.GLint(layer)
 	C.glFramebufferTextureLayer(_target, _attachment, _texture, _level, _layer)
 }
-/*func MapBufferRange(target int, offset ???, length int, access uint)???{
+/*func MapBufferRange(target int32, offset uintptr, length int32, access uint32)???{
 	_target := C.GLenum(target)
-	panic()
+	_offset :=C.GLintptr(offset)
 	_length := C.GLsizeiptr(length)
 	_access := C.GLbitfield(access)
 	returnvalue := C.glMapBufferRange(_target, _offset, _length, _access)
 	panic()
 return convreturnvalue
 }*/
-/*func FlushMappedBufferRange(target int, offset ???, length int){
+func FlushMappedBufferRange(target int32, offset uintptr, length int32){
 	_target := C.GLenum(target)
-	panic()
+	_offset :=C.GLintptr(offset)
 	_length := C.GLsizeiptr(length)
 	C.glFlushMappedBufferRange(_target, _offset, _length)
-}*/
-func BindVertexArray(array uint){
+}
+func BindVertexArray(array uint32){
 	_array := C.GLuint(array)
 	C.glBindVertexArray(_array)
 }
-/*func DeleteVertexArrays(n int, arrays ???){
+func DeleteVertexArrays(n int32, arrays *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_arrays := (*C.GLuint)(unsafe.Pointer(arrays))
 	C.glDeleteVertexArrays(_n, _arrays)
-}*/
-/*func GenVertexArrays(n int, arrays ???){
+}
+func GenVertexArrays(n int32, arrays *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_arrays := (*C.GLuint)(unsafe.Pointer(arrays))
 	C.glGenVertexArrays(_n, _arrays)
-}*/
-/*func IsVertexArray(array uint)bool{
+}
+func IsVertexArray(array uint32)bool{
 	_array := C.GLuint(array)
 	returnvalue := C.glIsVertexArray(_array)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-func DrawArraysInstanced(mode int, first int, count int, instancecount int){
+}
+func DrawArraysInstanced(mode int32, first int32, count int32, instancecount int32){
 	_mode := C.GLenum(mode)
 	_first := C.GLint(first)
 	_count := C.GLsizei(count)
 	_instancecount := C.GLsizei(instancecount)
 	C.glDrawArraysInstanced(_mode, _first, _count, _instancecount)
 }
-/*func DrawElementsInstanced(mode int, count int, whichtype int, indices ???, instancecount int){
+func DrawElementsInstanced(mode int32, count int32, whichtype int32, indices uintptr, instancecount int32){
 	_mode := C.GLenum(mode)
 	_count := C.GLsizei(count)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_indices := unsafe.Pointer(indices)
 	_instancecount := C.GLsizei(instancecount)
 	C.glDrawElementsInstanced(_mode, _count, _whichtype, _indices, _instancecount)
-}*/
-func TexBuffer(target int, internalformat int, buffer uint){
+}
+func TexBuffer(target int32, internalformat int32, buffer uint32){
 	_target := C.GLenum(target)
 	_internalformat := C.GLenum(internalformat)
 	_buffer := C.GLuint(buffer)
 	C.glTexBuffer(_target, _internalformat, _buffer)
 }
-func PrimitiveRestartIndex(index uint){
+func PrimitiveRestartIndex(index uint32){
 	_index := C.GLuint(index)
 	C.glPrimitiveRestartIndex(_index)
 }
-/*func CopyBufferSubData(readTarget int, writeTarget int, readOffset ???, writeOffset ???, size int){
+func CopyBufferSubData(readTarget int32, writeTarget int32, readOffset uintptr, writeOffset uintptr, size int32){
 	_readTarget := C.GLenum(readTarget)
 	_writeTarget := C.GLenum(writeTarget)
-	panic()
-	panic()
+	_readOffset :=C.GLintptr(readOffset)
+	_writeOffset :=C.GLintptr(writeOffset)
 	_size := C.GLsizeiptr(size)
 	C.glCopyBufferSubData(_readTarget, _writeTarget, _readOffset, _writeOffset, _size)
-}*/
-/*func GetUniformIndices(program uint, uniformCount int, uniformNames ???, uniformIndices ???){
+}
+func GetUniformIndices(program uint32, uniformCount int32, uniformNames **byte, uniformIndices *uint32){
 	_program := C.GLuint(program)
 	_uniformCount := C.GLsizei(uniformCount)
-	panic()
-	panic()
+	_uniformNames := (**C.GLchar)(unsafe.Pointer(uniformNames))
+	_uniformIndices := (*C.GLuint)(unsafe.Pointer(uniformIndices))
 	C.glGetUniformIndices(_program, _uniformCount, _uniformNames, _uniformIndices)
-}*/
-/*func GetActiveUniformsiv(program uint, uniformCount int, uniformIndices ???, pname int, params ???){
+}
+func GetActiveUniformsiv(program uint32, uniformCount int32, uniformIndices *uint32, pname int32, params *int32){
 	_program := C.GLuint(program)
 	_uniformCount := C.GLsizei(uniformCount)
-	panic()
+	_uniformIndices := (*C.GLuint)(unsafe.Pointer(uniformIndices))
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetActiveUniformsiv(_program, _uniformCount, _uniformIndices, _pname, _params)
-}*/
-/*func GetActiveUniformName(program uint, uniformIndex uint, bufSize int, length int, uniformName int){
+}
+func GetActiveUniformName(program uint32, uniformIndex uint32, bufSize int32, length *int32, uniformName *byte){
 	_program := C.GLuint(program)
 	_uniformIndex := C.GLuint(uniformIndex)
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
-	panic()
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_uniformName := (*C.GLchar)(unsafe.Pointer(uniformName))
 	C.glGetActiveUniformName(_program, _uniformIndex, _bufSize, _length, _uniformName)
-}*/
-/*func GetUniformBlockIndex(program uint, uniformBlockName ???)uint{
+}
+func GetUniformBlockIndex(program uint32, uniformBlockName *byte)uint32{
 	_program := C.GLuint(program)
-	panic()
+	_uniformBlockName := (*C.GLchar)(unsafe.Pointer(uniformBlockName))
 	returnvalue := C.glGetUniformBlockIndex(_program, _uniformBlockName)
-	panic()
+	convreturnvalue := uint32(returnvalue)
 return convreturnvalue
-}*/
-/*func GetActiveUniformBlockiv(program uint, uniformBlockIndex uint, pname int, params ???){
+}
+func GetActiveUniformBlockiv(program uint32, uniformBlockIndex uint32, pname int32, params *int32){
 	_program := C.GLuint(program)
 	_uniformBlockIndex := C.GLuint(uniformBlockIndex)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetActiveUniformBlockiv(_program, _uniformBlockIndex, _pname, _params)
-}*/
-/*func GetActiveUniformBlockName(program uint, uniformBlockIndex uint, bufSize int, length int, uniformBlockName int){
+}
+func GetActiveUniformBlockName(program uint32, uniformBlockIndex uint32, bufSize int32, length *int32, uniformBlockName *byte){
 	_program := C.GLuint(program)
 	_uniformBlockIndex := C.GLuint(uniformBlockIndex)
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
-	panic()
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_uniformBlockName := (*C.GLchar)(unsafe.Pointer(uniformBlockName))
 	C.glGetActiveUniformBlockName(_program, _uniformBlockIndex, _bufSize, _length, _uniformBlockName)
-}*/
-func UniformBlockBinding(program uint, uniformBlockIndex uint, uniformBlockBinding uint){
+}
+func UniformBlockBinding(program uint32, uniformBlockIndex uint32, uniformBlockBinding uint32){
 	_program := C.GLuint(program)
 	_uniformBlockIndex := C.GLuint(uniformBlockIndex)
 	_uniformBlockBinding := C.GLuint(uniformBlockBinding)
 	C.glUniformBlockBinding(_program, _uniformBlockIndex, _uniformBlockBinding)
 }
-/*func DrawElementsBaseVertex(mode int, count int, whichtype int, indices ???, basevertex int){
+func DrawElementsBaseVertex(mode int32, count int32, whichtype int32, indices uintptr, basevertex int32){
 	_mode := C.GLenum(mode)
 	_count := C.GLsizei(count)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_indices := unsafe.Pointer(indices)
 	_basevertex := C.GLint(basevertex)
 	C.glDrawElementsBaseVertex(_mode, _count, _whichtype, _indices, _basevertex)
-}*/
-/*func DrawRangeElementsBaseVertex(mode int, start uint, end uint, count int, whichtype int, indices ???, basevertex int){
+}
+func DrawRangeElementsBaseVertex(mode int32, start uint32, end uint32, count int32, whichtype int32, indices uintptr, basevertex int32){
 	_mode := C.GLenum(mode)
 	_start := C.GLuint(start)
 	_end := C.GLuint(end)
 	_count := C.GLsizei(count)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_indices := unsafe.Pointer(indices)
 	_basevertex := C.GLint(basevertex)
 	C.glDrawRangeElementsBaseVertex(_mode, _start, _end, _count, _whichtype, _indices, _basevertex)
-}*/
-/*func DrawElementsInstancedBaseVertex(mode int, count int, whichtype int, indices ???, instancecount int, basevertex int){
+}
+func DrawElementsInstancedBaseVertex(mode int32, count int32, whichtype int32, indices uintptr, instancecount int32, basevertex int32){
 	_mode := C.GLenum(mode)
 	_count := C.GLsizei(count)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_indices := unsafe.Pointer(indices)
 	_instancecount := C.GLsizei(instancecount)
 	_basevertex := C.GLint(basevertex)
 	C.glDrawElementsInstancedBaseVertex(_mode, _count, _whichtype, _indices, _instancecount, _basevertex)
-}*/
-/*func MultiDrawElementsBaseVertex(mode int, count ???, whichtype int, indices ???, drawcount int, basevertex ???){
+}
+/*func MultiDrawElementsBaseVertex(mode int32, count ???, whichtype int32, indices ???, drawcount int32, basevertex *int32){
 	_mode := C.GLenum(mode)
 	panic()
 	_whichtype := C.GLenum(whichtype)
 	panic()
 	_drawcount := C.GLsizei(drawcount)
-	panic()
+	_basevertex := (*C.GLint)(unsafe.Pointer(basevertex))
 	C.glMultiDrawElementsBaseVertex(_mode, _count, _whichtype, _indices, _drawcount, _basevertex)
 }*/
-func ProvokingVertex(mode int){
+func ProvokingVertex(mode int32){
 	_mode := C.GLenum(mode)
 	C.glProvokingVertex(_mode)
 }
-/*func FenceSync(condition int, flags uint)???{
+/*func FenceSync(condition int32, flags uint32)???{
 	_condition := C.GLenum(condition)
 	_flags := C.GLbitfield(flags)
 	returnvalue := C.glFenceSync(_condition, _flags)
@@ -3435,284 +3436,284 @@ return convreturnvalue
 /*func IsSync(sync ???)bool{
 	panic()
 	returnvalue := C.glIsSync(_sync)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
 }*/
 /*func DeleteSync(sync ???){
 	panic()
 	C.glDeleteSync(_sync)
 }*/
-/*func ClientWaitSync(sync ???, flags uint, timeout ???)int{
+/*func ClientWaitSync(sync ???, flags uint32, timeout *uint64)int32{
 	panic()
 	_flags := C.GLbitfield(flags)
-	panic()
+	_timeout := (*C.GLuint64)(unsafe.Pointer(timeout))
 	returnvalue := C.glClientWaitSync(_sync, _flags, _timeout)
-	convreturnvalue := int(returnvalue)
+	convreturnvalue := int32(returnvalue)
 return convreturnvalue
 }*/
-/*func WaitSync(sync ???, flags uint, timeout ???){
+/*func WaitSync(sync ???, flags uint32, timeout *uint64){
 	panic()
 	_flags := C.GLbitfield(flags)
-	panic()
+	_timeout := (*C.GLuint64)(unsafe.Pointer(timeout))
 	C.glWaitSync(_sync, _flags, _timeout)
 }*/
-/*func GetInteger64v(pname int, data ???){
+func GetInteger64v(pname int32, data *int64){
 	_pname := C.GLenum(pname)
-	panic()
+	_data := (*C.GLint64)(unsafe.Pointer(data))
 	C.glGetInteger64v(_pname, _data)
-}*/
-/*func GetSynciv(sync ???, pname int, bufSize int, length int, values ???){
+}
+/*func GetSynciv(sync ???, pname int32, bufSize int32, length *int32, values *int32){
 	panic()
 	_pname := C.GLenum(pname)
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
-	panic()
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_values := (*C.GLint)(unsafe.Pointer(values))
 	C.glGetSynciv(_sync, _pname, _bufSize, _length, _values)
 }*/
-/*func GetInteger64i_v(target int, index uint, data ???){
+func GetInteger64i_v(target int32, index uint32, data *int64){
 	_target := C.GLenum(target)
 	_index := C.GLuint(index)
-	panic()
+	_data := (*C.GLint64)(unsafe.Pointer(data))
 	C.glGetInteger64i_v(_target, _index, _data)
-}*/
-/*func GetBufferParameteri64v(target int, pname int, params ???){
+}
+func GetBufferParameteri64v(target int32, pname int32, params *int64){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint64)(unsafe.Pointer(params))
 	C.glGetBufferParameteri64v(_target, _pname, _params)
-}*/
-func FramebufferTexture(target int, attachment int, texture uint, level int){
+}
+func FramebufferTexture(target int32, attachment int32, texture uint32, level int32){
 	_target := C.GLenum(target)
 	_attachment := C.GLenum(attachment)
 	_texture := C.GLuint(texture)
 	_level := C.GLint(level)
 	C.glFramebufferTexture(_target, _attachment, _texture, _level)
 }
-func TexImage2DMultisample(target int, samples int, internalformat int, width int, height int, fixedsamplelocations bool){
+func TexImage2DMultisample(target int32, samples int32, internalformat int32, width int32, height int32, fixedsamplelocations bool){
 	_target := C.GLenum(target)
 	_samples := C.GLsizei(samples)
 	_internalformat := C.GLenum(internalformat)
 	_width := C.GLsizei(width)
 	_height := C.GLsizei(height)
-	_fixedsamplelocations := C.GLboolean(1);if !fixedsamplelocations{_fixedsamplelocations=C.GLboolean(0)}
+	_fixedsamplelocations := C.GLboolean(TRUE);if !fixedsamplelocations{_fixedsamplelocations=C.GLboolean(FALSE)}
 	C.glTexImage2DMultisample(_target, _samples, _internalformat, _width, _height, _fixedsamplelocations)
 }
-func TexImage3DMultisample(target int, samples int, internalformat int, width int, height int, depth int, fixedsamplelocations bool){
+func TexImage3DMultisample(target int32, samples int32, internalformat int32, width int32, height int32, depth int32, fixedsamplelocations bool){
 	_target := C.GLenum(target)
 	_samples := C.GLsizei(samples)
 	_internalformat := C.GLenum(internalformat)
 	_width := C.GLsizei(width)
 	_height := C.GLsizei(height)
 	_depth := C.GLsizei(depth)
-	_fixedsamplelocations := C.GLboolean(1);if !fixedsamplelocations{_fixedsamplelocations=C.GLboolean(0)}
+	_fixedsamplelocations := C.GLboolean(TRUE);if !fixedsamplelocations{_fixedsamplelocations=C.GLboolean(FALSE)}
 	C.glTexImage3DMultisample(_target, _samples, _internalformat, _width, _height, _depth, _fixedsamplelocations)
 }
-/*func GetMultisamplefv(pname int, index uint, val ???){
+func GetMultisamplefv(pname int32, index uint32, val *float32){
 	_pname := C.GLenum(pname)
 	_index := C.GLuint(index)
-	panic()
+	_val := (*C.GLfloat)(unsafe.Pointer(val))
 	C.glGetMultisamplefv(_pname, _index, _val)
-}*/
-func SampleMaski(maskNumber uint, mask uint){
+}
+func SampleMaski(maskNumber uint32, mask uint32){
 	_maskNumber := C.GLuint(maskNumber)
 	_mask := C.GLbitfield(mask)
 	C.glSampleMaski(_maskNumber, _mask)
 }
-/*func BindFragDataLocationIndexed(program uint, colorNumber uint, index uint, name ???){
+func BindFragDataLocationIndexed(program uint32, colorNumber uint32, index uint32, name *byte){
 	_program := C.GLuint(program)
 	_colorNumber := C.GLuint(colorNumber)
 	_index := C.GLuint(index)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	C.glBindFragDataLocationIndexed(_program, _colorNumber, _index, _name)
-}*/
-/*func GetFragDataIndex(program uint, name ???)int{
+}
+func GetFragDataIndex(program uint32, name *byte)int32{
 	_program := C.GLuint(program)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	returnvalue := C.glGetFragDataIndex(_program, _name)
-	panic()
+	convreturnvalue := int32(returnvalue)
 return convreturnvalue
-}*/
-/*func GenSamplers(count int, samplers ???){
+}
+func GenSamplers(count int32, samplers *uint32){
 	_count := C.GLsizei(count)
-	panic()
+	_samplers := (*C.GLuint)(unsafe.Pointer(samplers))
 	C.glGenSamplers(_count, _samplers)
-}*/
-/*func DeleteSamplers(count int, samplers ???){
+}
+func DeleteSamplers(count int32, samplers *uint32){
 	_count := C.GLsizei(count)
-	panic()
+	_samplers := (*C.GLuint)(unsafe.Pointer(samplers))
 	C.glDeleteSamplers(_count, _samplers)
-}*/
-/*func IsSampler(sampler uint)bool{
+}
+func IsSampler(sampler uint32)bool{
 	_sampler := C.GLuint(sampler)
 	returnvalue := C.glIsSampler(_sampler)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-func BindSampler(unit uint, sampler uint){
+}
+func BindSampler(unit uint32, sampler uint32){
 	_unit := C.GLuint(unit)
 	_sampler := C.GLuint(sampler)
 	C.glBindSampler(_unit, _sampler)
 }
-func SamplerParameteri(sampler uint, pname int, param int){
+func SamplerParameteri(sampler uint32, pname int32, param int32){
 	_sampler := C.GLuint(sampler)
 	_pname := C.GLenum(pname)
 	_param := C.GLint(param)
 	C.glSamplerParameteri(_sampler, _pname, _param)
 }
-/*func SamplerParameteriv(sampler uint, pname int, param ???){
+func SamplerParameteriv(sampler uint32, pname int32, param *int32){
 	_sampler := C.GLuint(sampler)
 	_pname := C.GLenum(pname)
-	panic()
+	_param := (*C.GLint)(unsafe.Pointer(param))
 	C.glSamplerParameteriv(_sampler, _pname, _param)
-}*/
-func SamplerParameterf(sampler uint, pname int, param float32){
+}
+func SamplerParameterf(sampler uint32, pname int32, param float32){
 	_sampler := C.GLuint(sampler)
 	_pname := C.GLenum(pname)
 	_param := C.GLfloat(param)
 	C.glSamplerParameterf(_sampler, _pname, _param)
 }
-/*func SamplerParameterfv(sampler uint, pname int, param ???){
+func SamplerParameterfv(sampler uint32, pname int32, param *float32){
 	_sampler := C.GLuint(sampler)
 	_pname := C.GLenum(pname)
-	panic()
+	_param := (*C.GLfloat)(unsafe.Pointer(param))
 	C.glSamplerParameterfv(_sampler, _pname, _param)
-}*/
-/*func SamplerParameterIiv(sampler uint, pname int, param ???){
+}
+func SamplerParameterIiv(sampler uint32, pname int32, param *int32){
 	_sampler := C.GLuint(sampler)
 	_pname := C.GLenum(pname)
-	panic()
+	_param := (*C.GLint)(unsafe.Pointer(param))
 	C.glSamplerParameterIiv(_sampler, _pname, _param)
-}*/
-/*func SamplerParameterIuiv(sampler uint, pname int, param ???){
+}
+func SamplerParameterIuiv(sampler uint32, pname int32, param *uint32){
 	_sampler := C.GLuint(sampler)
 	_pname := C.GLenum(pname)
-	panic()
+	_param := (*C.GLuint)(unsafe.Pointer(param))
 	C.glSamplerParameterIuiv(_sampler, _pname, _param)
-}*/
-/*func GetSamplerParameteriv(sampler uint, pname int, params ???){
+}
+func GetSamplerParameteriv(sampler uint32, pname int32, params *int32){
 	_sampler := C.GLuint(sampler)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetSamplerParameteriv(_sampler, _pname, _params)
-}*/
-/*func GetSamplerParameterIiv(sampler uint, pname int, params ???){
+}
+func GetSamplerParameterIiv(sampler uint32, pname int32, params *int32){
 	_sampler := C.GLuint(sampler)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetSamplerParameterIiv(_sampler, _pname, _params)
-}*/
-/*func GetSamplerParameterfv(sampler uint, pname int, params ???){
+}
+func GetSamplerParameterfv(sampler uint32, pname int32, params *float32){
 	_sampler := C.GLuint(sampler)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLfloat)(unsafe.Pointer(params))
 	C.glGetSamplerParameterfv(_sampler, _pname, _params)
-}*/
-/*func GetSamplerParameterIuiv(sampler uint, pname int, params ???){
+}
+func GetSamplerParameterIuiv(sampler uint32, pname int32, params *uint32){
 	_sampler := C.GLuint(sampler)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLuint)(unsafe.Pointer(params))
 	C.glGetSamplerParameterIuiv(_sampler, _pname, _params)
-}*/
-func QueryCounter(id uint, target int){
+}
+func QueryCounter(id uint32, target int32){
 	_id := C.GLuint(id)
 	_target := C.GLenum(target)
 	C.glQueryCounter(_id, _target)
 }
-/*func GetQueryObjecti64v(id uint, pname int, params ???){
+func GetQueryObjecti64v(id uint32, pname int32, params *int64){
 	_id := C.GLuint(id)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint64)(unsafe.Pointer(params))
 	C.glGetQueryObjecti64v(_id, _pname, _params)
-}*/
-/*func GetQueryObjectui64v(id uint, pname int, params ???){
+}
+/*func GetQueryObjectui64v(id uint32, pname int32, params ???){
 	_id := C.GLuint(id)
 	_pname := C.GLenum(pname)
 	panic()
 	C.glGetQueryObjectui64v(_id, _pname, _params)
 }*/
-func VertexAttribDivisor(index uint, divisor uint){
+func VertexAttribDivisor(index uint32, divisor uint32){
 	_index := C.GLuint(index)
 	_divisor := C.GLuint(divisor)
 	C.glVertexAttribDivisor(_index, _divisor)
 }
-func VertexAttribP1ui(index uint, whichtype int, normalized bool, value uint){
+func VertexAttribP1ui(index uint32, whichtype int32, normalized bool, value uint32){
 	_index := C.GLuint(index)
 	_whichtype := C.GLenum(whichtype)
-	_normalized := C.GLboolean(1);if !normalized{_normalized=C.GLboolean(0)}
+	_normalized := C.GLboolean(TRUE);if !normalized{_normalized=C.GLboolean(FALSE)}
 	_value := C.GLuint(value)
 	C.glVertexAttribP1ui(_index, _whichtype, _normalized, _value)
 }
-/*func VertexAttribP1uiv(index uint, whichtype int, normalized bool, value ???){
+func VertexAttribP1uiv(index uint32, whichtype int32, normalized bool, value *uint32){
 	_index := C.GLuint(index)
 	_whichtype := C.GLenum(whichtype)
-	_normalized := C.GLboolean(1);if !normalized{_normalized=C.GLboolean(0)}
-	panic()
+	_normalized := C.GLboolean(TRUE);if !normalized{_normalized=C.GLboolean(FALSE)}
+	_value := (*C.GLuint)(unsafe.Pointer(value))
 	C.glVertexAttribP1uiv(_index, _whichtype, _normalized, _value)
-}*/
-func VertexAttribP2ui(index uint, whichtype int, normalized bool, value uint){
+}
+func VertexAttribP2ui(index uint32, whichtype int32, normalized bool, value uint32){
 	_index := C.GLuint(index)
 	_whichtype := C.GLenum(whichtype)
-	_normalized := C.GLboolean(1);if !normalized{_normalized=C.GLboolean(0)}
+	_normalized := C.GLboolean(TRUE);if !normalized{_normalized=C.GLboolean(FALSE)}
 	_value := C.GLuint(value)
 	C.glVertexAttribP2ui(_index, _whichtype, _normalized, _value)
 }
-/*func VertexAttribP2uiv(index uint, whichtype int, normalized bool, value ???){
+func VertexAttribP2uiv(index uint32, whichtype int32, normalized bool, value *uint32){
 	_index := C.GLuint(index)
 	_whichtype := C.GLenum(whichtype)
-	_normalized := C.GLboolean(1);if !normalized{_normalized=C.GLboolean(0)}
-	panic()
+	_normalized := C.GLboolean(TRUE);if !normalized{_normalized=C.GLboolean(FALSE)}
+	_value := (*C.GLuint)(unsafe.Pointer(value))
 	C.glVertexAttribP2uiv(_index, _whichtype, _normalized, _value)
-}*/
-func VertexAttribP3ui(index uint, whichtype int, normalized bool, value uint){
+}
+func VertexAttribP3ui(index uint32, whichtype int32, normalized bool, value uint32){
 	_index := C.GLuint(index)
 	_whichtype := C.GLenum(whichtype)
-	_normalized := C.GLboolean(1);if !normalized{_normalized=C.GLboolean(0)}
+	_normalized := C.GLboolean(TRUE);if !normalized{_normalized=C.GLboolean(FALSE)}
 	_value := C.GLuint(value)
 	C.glVertexAttribP3ui(_index, _whichtype, _normalized, _value)
 }
-/*func VertexAttribP3uiv(index uint, whichtype int, normalized bool, value ???){
+func VertexAttribP3uiv(index uint32, whichtype int32, normalized bool, value *uint32){
 	_index := C.GLuint(index)
 	_whichtype := C.GLenum(whichtype)
-	_normalized := C.GLboolean(1);if !normalized{_normalized=C.GLboolean(0)}
-	panic()
+	_normalized := C.GLboolean(TRUE);if !normalized{_normalized=C.GLboolean(FALSE)}
+	_value := (*C.GLuint)(unsafe.Pointer(value))
 	C.glVertexAttribP3uiv(_index, _whichtype, _normalized, _value)
-}*/
-func VertexAttribP4ui(index uint, whichtype int, normalized bool, value uint){
+}
+func VertexAttribP4ui(index uint32, whichtype int32, normalized bool, value uint32){
 	_index := C.GLuint(index)
 	_whichtype := C.GLenum(whichtype)
-	_normalized := C.GLboolean(1);if !normalized{_normalized=C.GLboolean(0)}
+	_normalized := C.GLboolean(TRUE);if !normalized{_normalized=C.GLboolean(FALSE)}
 	_value := C.GLuint(value)
 	C.glVertexAttribP4ui(_index, _whichtype, _normalized, _value)
 }
-/*func VertexAttribP4uiv(index uint, whichtype int, normalized bool, value ???){
+func VertexAttribP4uiv(index uint32, whichtype int32, normalized bool, value *uint32){
 	_index := C.GLuint(index)
 	_whichtype := C.GLenum(whichtype)
-	_normalized := C.GLboolean(1);if !normalized{_normalized=C.GLboolean(0)}
-	panic()
+	_normalized := C.GLboolean(TRUE);if !normalized{_normalized=C.GLboolean(FALSE)}
+	_value := (*C.GLuint)(unsafe.Pointer(value))
 	C.glVertexAttribP4uiv(_index, _whichtype, _normalized, _value)
-}*/
+}
 func MinSampleShading(value float32){
 	_value := C.GLfloat(value)
 	C.glMinSampleShading(_value)
 }
-func BlendEquationi(buf uint, mode int){
+func BlendEquationi(buf uint32, mode int32){
 	_buf := C.GLuint(buf)
 	_mode := C.GLenum(mode)
 	C.glBlendEquationi(_buf, _mode)
 }
-func BlendEquationSeparatei(buf uint, modeRGB int, modeAlpha int){
+func BlendEquationSeparatei(buf uint32, modeRGB int32, modeAlpha int32){
 	_buf := C.GLuint(buf)
 	_modeRGB := C.GLenum(modeRGB)
 	_modeAlpha := C.GLenum(modeAlpha)
 	C.glBlendEquationSeparatei(_buf, _modeRGB, _modeAlpha)
 }
-func BlendFunci(buf uint, src int, dst int){
+func BlendFunci(buf uint32, src int32, dst int32){
 	_buf := C.GLuint(buf)
 	_src := C.GLenum(src)
 	_dst := C.GLenum(dst)
 	C.glBlendFunci(_buf, _src, _dst)
 }
-func BlendFuncSeparatei(buf uint, srcRGB int, dstRGB int, srcAlpha int, dstAlpha int){
+func BlendFuncSeparatei(buf uint32, srcRGB int32, dstRGB int32, srcAlpha int32, dstAlpha int32){
 	_buf := C.GLuint(buf)
 	_srcRGB := C.GLenum(srcRGB)
 	_dstRGB := C.GLenum(dstRGB)
@@ -3720,36 +3721,36 @@ func BlendFuncSeparatei(buf uint, srcRGB int, dstRGB int, srcAlpha int, dstAlpha
 	_dstAlpha := C.GLenum(dstAlpha)
 	C.glBlendFuncSeparatei(_buf, _srcRGB, _dstRGB, _srcAlpha, _dstAlpha)
 }
-/*func DrawArraysIndirect(mode int, indirect ???){
+func DrawArraysIndirect(mode int32, indirect uintptr){
 	_mode := C.GLenum(mode)
-	panic()
+	_indirect := unsafe.Pointer(indirect)
 	C.glDrawArraysIndirect(_mode, _indirect)
-}*/
-/*func DrawElementsIndirect(mode int, whichtype int, indirect ???){
+}
+func DrawElementsIndirect(mode int32, whichtype int32, indirect uintptr){
 	_mode := C.GLenum(mode)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_indirect := unsafe.Pointer(indirect)
 	C.glDrawElementsIndirect(_mode, _whichtype, _indirect)
-}*/
-func Uniform1d(location int, x float64){
+}
+func Uniform1d(location int32, x float64){
 	_location := C.GLint(location)
 	_x := C.GLdouble(x)
 	C.glUniform1d(_location, _x)
 }
-func Uniform2d(location int, x float64, y float64){
+func Uniform2d(location int32, x float64, y float64){
 	_location := C.GLint(location)
 	_x := C.GLdouble(x)
 	_y := C.GLdouble(y)
 	C.glUniform2d(_location, _x, _y)
 }
-func Uniform3d(location int, x float64, y float64, z float64){
+func Uniform3d(location int32, x float64, y float64, z float64){
 	_location := C.GLint(location)
 	_x := C.GLdouble(x)
 	_y := C.GLdouble(y)
 	_z := C.GLdouble(z)
 	C.glUniform3d(_location, _x, _y, _z)
 }
-func Uniform4d(location int, x float64, y float64, z float64, w float64){
+func Uniform4d(location int32, x float64, y float64, z float64, w float64){
 	_location := C.GLint(location)
 	_x := C.GLdouble(x)
 	_y := C.GLdouble(y)
@@ -3757,244 +3758,244 @@ func Uniform4d(location int, x float64, y float64, z float64, w float64){
 	_w := C.GLdouble(w)
 	C.glUniform4d(_location, _x, _y, _z, _w)
 }
-/*func Uniform1dv(location int, count int, value ???){
+func Uniform1dv(location int32, count int32, value *float64){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glUniform1dv(_location, _count, _value)
-}*/
-/*func Uniform2dv(location int, count int, value ???){
+}
+func Uniform2dv(location int32, count int32, value *float64){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glUniform2dv(_location, _count, _value)
-}*/
-/*func Uniform3dv(location int, count int, value ???){
+}
+func Uniform3dv(location int32, count int32, value *float64){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glUniform3dv(_location, _count, _value)
-}*/
-/*func Uniform4dv(location int, count int, value ???){
+}
+func Uniform4dv(location int32, count int32, value *float64){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glUniform4dv(_location, _count, _value)
-}*/
-/*func UniformMatrix2dv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix2dv(location int32, count int32, transpose bool, value *float64){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glUniformMatrix2dv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix3dv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix3dv(location int32, count int32, transpose bool, value *float64){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glUniformMatrix3dv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix4dv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix4dv(location int32, count int32, transpose bool, value *float64){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glUniformMatrix4dv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix2x3dv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix2x3dv(location int32, count int32, transpose bool, value *float64){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glUniformMatrix2x3dv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix2x4dv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix2x4dv(location int32, count int32, transpose bool, value *float64){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glUniformMatrix2x4dv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix3x2dv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix3x2dv(location int32, count int32, transpose bool, value *float64){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glUniformMatrix3x2dv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix3x4dv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix3x4dv(location int32, count int32, transpose bool, value *float64){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glUniformMatrix3x4dv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix4x2dv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix4x2dv(location int32, count int32, transpose bool, value *float64){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glUniformMatrix4x2dv(_location, _count, _transpose, _value)
-}*/
-/*func UniformMatrix4x3dv(location int, count int, transpose bool, value ???){
+}
+func UniformMatrix4x3dv(location int32, count int32, transpose bool, value *float64){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glUniformMatrix4x3dv(_location, _count, _transpose, _value)
-}*/
-/*func GetUniformdv(program uint, location int, params ???){
+}
+func GetUniformdv(program uint32, location int32, params *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
-	panic()
+	_params := (*C.GLdouble)(unsafe.Pointer(params))
 	C.glGetUniformdv(_program, _location, _params)
-}*/
-/*func GetSubroutineUniformLocation(program uint, shadertype int, name ???)int{
+}
+func GetSubroutineUniformLocation(program uint32, shadertype int32, name *byte)int32{
 	_program := C.GLuint(program)
 	_shadertype := C.GLenum(shadertype)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	returnvalue := C.glGetSubroutineUniformLocation(_program, _shadertype, _name)
-	panic()
+	convreturnvalue := int32(returnvalue)
 return convreturnvalue
-}*/
-/*func GetSubroutineIndex(program uint, shadertype int, name ???)uint{
+}
+func GetSubroutineIndex(program uint32, shadertype int32, name *byte)uint32{
 	_program := C.GLuint(program)
 	_shadertype := C.GLenum(shadertype)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	returnvalue := C.glGetSubroutineIndex(_program, _shadertype, _name)
-	panic()
+	convreturnvalue := uint32(returnvalue)
 return convreturnvalue
-}*/
-/*func GetActiveSubroutineUniformiv(program uint, shadertype int, index uint, pname int, values ???){
+}
+func GetActiveSubroutineUniformiv(program uint32, shadertype int32, index uint32, pname int32, values *int32){
 	_program := C.GLuint(program)
 	_shadertype := C.GLenum(shadertype)
 	_index := C.GLuint(index)
 	_pname := C.GLenum(pname)
-	panic()
+	_values := (*C.GLint)(unsafe.Pointer(values))
 	C.glGetActiveSubroutineUniformiv(_program, _shadertype, _index, _pname, _values)
-}*/
-/*func GetActiveSubroutineUniformName(program uint, shadertype int, index uint, bufsize int, length int, name int){
+}
+func GetActiveSubroutineUniformName(program uint32, shadertype int32, index uint32, bufsize int32, length *int32, name *byte){
 	_program := C.GLuint(program)
 	_shadertype := C.GLenum(shadertype)
 	_index := C.GLuint(index)
 	_bufsize := C.GLsizei(bufsize)
-	_length := C.GLsizei(length)
-	panic()
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	C.glGetActiveSubroutineUniformName(_program, _shadertype, _index, _bufsize, _length, _name)
-}*/
-/*func GetActiveSubroutineName(program uint, shadertype int, index uint, bufsize int, length int, name int){
+}
+func GetActiveSubroutineName(program uint32, shadertype int32, index uint32, bufsize int32, length *int32, name *byte){
 	_program := C.GLuint(program)
 	_shadertype := C.GLenum(shadertype)
 	_index := C.GLuint(index)
 	_bufsize := C.GLsizei(bufsize)
-	_length := C.GLsizei(length)
-	panic()
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	C.glGetActiveSubroutineName(_program, _shadertype, _index, _bufsize, _length, _name)
-}*/
-/*func UniformSubroutinesuiv(shadertype int, count int, indices ???){
+}
+func UniformSubroutinesuiv(shadertype int32, count int32, indices *uint32){
 	_shadertype := C.GLenum(shadertype)
 	_count := C.GLsizei(count)
-	panic()
+	_indices := (*C.GLuint)(unsafe.Pointer(indices))
 	C.glUniformSubroutinesuiv(_shadertype, _count, _indices)
-}*/
-/*func GetUniformSubroutineuiv(shadertype int, location int, params ???){
+}
+func GetUniformSubroutineuiv(shadertype int32, location int32, params *uint32){
 	_shadertype := C.GLenum(shadertype)
 	_location := C.GLint(location)
-	panic()
+	_params := (*C.GLuint)(unsafe.Pointer(params))
 	C.glGetUniformSubroutineuiv(_shadertype, _location, _params)
-}*/
-/*func GetProgramStageiv(program uint, shadertype int, pname int, values ???){
+}
+func GetProgramStageiv(program uint32, shadertype int32, pname int32, values *int32){
 	_program := C.GLuint(program)
 	_shadertype := C.GLenum(shadertype)
 	_pname := C.GLenum(pname)
-	panic()
+	_values := (*C.GLint)(unsafe.Pointer(values))
 	C.glGetProgramStageiv(_program, _shadertype, _pname, _values)
-}*/
-func PatchParameteri(pname int, value int){
+}
+func PatchParameteri(pname int32, value int32){
 	_pname := C.GLenum(pname)
 	_value := C.GLint(value)
 	C.glPatchParameteri(_pname, _value)
 }
-/*func PatchParameterfv(pname int, values ???){
+func PatchParameterfv(pname int32, values *float32){
 	_pname := C.GLenum(pname)
-	panic()
+	_values := (*C.GLfloat)(unsafe.Pointer(values))
 	C.glPatchParameterfv(_pname, _values)
-}*/
-func BindTransformFeedback(target int, id uint){
+}
+func BindTransformFeedback(target int32, id uint32){
 	_target := C.GLenum(target)
 	_id := C.GLuint(id)
 	C.glBindTransformFeedback(_target, _id)
 }
-/*func DeleteTransformFeedbacks(n int, ids ???){
+func DeleteTransformFeedbacks(n int32, ids *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_ids := (*C.GLuint)(unsafe.Pointer(ids))
 	C.glDeleteTransformFeedbacks(_n, _ids)
-}*/
-/*func GenTransformFeedbacks(n int, ids ???){
+}
+func GenTransformFeedbacks(n int32, ids *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_ids := (*C.GLuint)(unsafe.Pointer(ids))
 	C.glGenTransformFeedbacks(_n, _ids)
-}*/
-/*func IsTransformFeedback(id uint)bool{
+}
+func IsTransformFeedback(id uint32)bool{
 	_id := C.GLuint(id)
 	returnvalue := C.glIsTransformFeedback(_id)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
+}
 func PauseTransformFeedback(){
 	C.glPauseTransformFeedback()
 }
 func ResumeTransformFeedback(){
 	C.glResumeTransformFeedback()
 }
-func DrawTransformFeedback(mode int, id uint){
+func DrawTransformFeedback(mode int32, id uint32){
 	_mode := C.GLenum(mode)
 	_id := C.GLuint(id)
 	C.glDrawTransformFeedback(_mode, _id)
 }
-func DrawTransformFeedbackStream(mode int, id uint, stream uint){
+func DrawTransformFeedbackStream(mode int32, id uint32, stream uint32){
 	_mode := C.GLenum(mode)
 	_id := C.GLuint(id)
 	_stream := C.GLuint(stream)
 	C.glDrawTransformFeedbackStream(_mode, _id, _stream)
 }
-func BeginQueryIndexed(target int, index uint, id uint){
+func BeginQueryIndexed(target int32, index uint32, id uint32){
 	_target := C.GLenum(target)
 	_index := C.GLuint(index)
 	_id := C.GLuint(id)
 	C.glBeginQueryIndexed(_target, _index, _id)
 }
-func EndQueryIndexed(target int, index uint){
+func EndQueryIndexed(target int32, index uint32){
 	_target := C.GLenum(target)
 	_index := C.GLuint(index)
 	C.glEndQueryIndexed(_target, _index)
 }
-/*func GetQueryIndexediv(target int, index uint, pname int, params ???){
+func GetQueryIndexediv(target int32, index uint32, pname int32, params *int32){
 	_target := C.GLenum(target)
 	_index := C.GLuint(index)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetQueryIndexediv(_target, _index, _pname, _params)
-}*/
+}
 func ReleaseShaderCompiler(){
 	C.glReleaseShaderCompiler()
 }
-/*func ShaderBinary(count int, shaders ???, binaryformat int, binary ???, length int){
+func ShaderBinary(count int32, shaders *uint32, binaryformat int32, binary uintptr, length int32){
 	_count := C.GLsizei(count)
-	panic()
+	_shaders := (*C.GLuint)(unsafe.Pointer(shaders))
 	_binaryformat := C.GLenum(binaryformat)
-	panic()
+	_binary := unsafe.Pointer(binary)
 	_length := C.GLsizei(length)
 	C.glShaderBinary(_count, _shaders, _binaryformat, _binary, _length)
-}*/
-/*func GetShaderPrecisionFormat(shadertype int, precisiontype int, range ???, precision ???){
+}
+func GetShaderPrecisionFormat(shadertype int32, precisiontype int32, whichrange *int32, precision *int32){
 	_shadertype := C.GLenum(shadertype)
 	_precisiontype := C.GLenum(precisiontype)
-	panic()
-	panic()
-	C.glGetShaderPrecisionFormat(_shadertype, _precisiontype, _range, _precision)
-}*/
+	_whichrange := (*C.GLint)(unsafe.Pointer(whichrange))
+	_precision := (*C.GLint)(unsafe.Pointer(precision))
+	C.glGetShaderPrecisionFormat(_shadertype, _precisiontype, _whichrange, _precision)
+}
 func DepthRangef(n float32, f float32){
 	_n := C.GLfloat(n)
 	_f := C.GLfloat(f)
@@ -4004,181 +4005,181 @@ func ClearDepthf(d float32){
 	_d := C.GLfloat(d)
 	C.glClearDepthf(_d)
 }
-/*func GetProgramBinary(program uint, bufSize int, length int, binaryFormat ???, binary ???){
+/*func GetProgramBinary(program uint32, bufSize int32, length *int32, binaryFormat ???, binary ???){
 	_program := C.GLuint(program)
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
 	panic()
 	panic()
 	C.glGetProgramBinary(_program, _bufSize, _length, _binaryFormat, _binary)
 }*/
-/*func ProgramBinary(program uint, binaryFormat int, binary ???, length int){
+func ProgramBinary(program uint32, binaryFormat int32, binary uintptr, length int32){
 	_program := C.GLuint(program)
 	_binaryFormat := C.GLenum(binaryFormat)
-	panic()
+	_binary := unsafe.Pointer(binary)
 	_length := C.GLsizei(length)
 	C.glProgramBinary(_program, _binaryFormat, _binary, _length)
-}*/
-func ProgramParameteri(program uint, pname int, value int){
+}
+func ProgramParameteri(program uint32, pname int32, value int32){
 	_program := C.GLuint(program)
 	_pname := C.GLenum(pname)
 	_value := C.GLint(value)
 	C.glProgramParameteri(_program, _pname, _value)
 }
-func UseProgramStages(pipeline uint, stages uint, program uint){
+func UseProgramStages(pipeline uint32, stages uint32, program uint32){
 	_pipeline := C.GLuint(pipeline)
 	_stages := C.GLbitfield(stages)
 	_program := C.GLuint(program)
 	C.glUseProgramStages(_pipeline, _stages, _program)
 }
-func ActiveShaderProgram(pipeline uint, program uint){
+func ActiveShaderProgram(pipeline uint32, program uint32){
 	_pipeline := C.GLuint(pipeline)
 	_program := C.GLuint(program)
 	C.glActiveShaderProgram(_pipeline, _program)
 }
-/*func CreateShaderProgramv(whichtype int, count int, strings ???)uint{
+func CreateShaderProgramv(whichtype int32, count int32, strings **byte)uint32{
 	_whichtype := C.GLenum(whichtype)
 	_count := C.GLsizei(count)
-	panic()
+	_strings := (**C.GLchar)(unsafe.Pointer(strings))
 	returnvalue := C.glCreateShaderProgramv(_whichtype, _count, _strings)
-	panic()
+	convreturnvalue := uint32(returnvalue)
 return convreturnvalue
-}*/
-func BindProgramPipeline(pipeline uint){
+}
+func BindProgramPipeline(pipeline uint32){
 	_pipeline := C.GLuint(pipeline)
 	C.glBindProgramPipeline(_pipeline)
 }
-/*func DeleteProgramPipelines(n int, pipelines ???){
+func DeleteProgramPipelines(n int32, pipelines *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_pipelines := (*C.GLuint)(unsafe.Pointer(pipelines))
 	C.glDeleteProgramPipelines(_n, _pipelines)
-}*/
-/*func GenProgramPipelines(n int, pipelines ???){
+}
+func GenProgramPipelines(n int32, pipelines *uint32){
 	_n := C.GLsizei(n)
-	panic()
+	_pipelines := (*C.GLuint)(unsafe.Pointer(pipelines))
 	C.glGenProgramPipelines(_n, _pipelines)
-}*/
-/*func IsProgramPipeline(pipeline uint)bool{
+}
+func IsProgramPipeline(pipeline uint32)bool{
 	_pipeline := C.GLuint(pipeline)
 	returnvalue := C.glIsProgramPipeline(_pipeline)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-/*func GetProgramPipelineiv(pipeline uint, pname int, params ???){
+}
+func GetProgramPipelineiv(pipeline uint32, pname int32, params *int32){
 	_pipeline := C.GLuint(pipeline)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetProgramPipelineiv(_pipeline, _pname, _params)
-}*/
-func ProgramUniform1i(program uint, location int, v0 int){
+}
+func ProgramUniform1i(program uint32, location int32, v0 int32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLint(v0)
 	C.glProgramUniform1i(_program, _location, _v0)
 }
-/*func ProgramUniform1iv(program uint, location int, count int, value ???){
+func ProgramUniform1iv(program uint32, location int32, count int32, value *int32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLint)(unsafe.Pointer(value))
 	C.glProgramUniform1iv(_program, _location, _count, _value)
-}*/
-func ProgramUniform1f(program uint, location int, v0 float32){
+}
+func ProgramUniform1f(program uint32, location int32, v0 float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLfloat(v0)
 	C.glProgramUniform1f(_program, _location, _v0)
 }
-/*func ProgramUniform1fv(program uint, location int, count int, value ???){
+func ProgramUniform1fv(program uint32, location int32, count int32, value *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glProgramUniform1fv(_program, _location, _count, _value)
-}*/
-func ProgramUniform1d(program uint, location int, v0 float64){
+}
+func ProgramUniform1d(program uint32, location int32, v0 float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLdouble(v0)
 	C.glProgramUniform1d(_program, _location, _v0)
 }
-/*func ProgramUniform1dv(program uint, location int, count int, value ???){
+func ProgramUniform1dv(program uint32, location int32, count int32, value *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glProgramUniform1dv(_program, _location, _count, _value)
-}*/
-func ProgramUniform1ui(program uint, location int, v0 uint){
+}
+func ProgramUniform1ui(program uint32, location int32, v0 uint32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLuint(v0)
 	C.glProgramUniform1ui(_program, _location, _v0)
 }
-/*func ProgramUniform1uiv(program uint, location int, count int, value ???){
+func ProgramUniform1uiv(program uint32, location int32, count int32, value *uint32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLuint)(unsafe.Pointer(value))
 	C.glProgramUniform1uiv(_program, _location, _count, _value)
-}*/
-func ProgramUniform2i(program uint, location int, v0 int, v1 int){
+}
+func ProgramUniform2i(program uint32, location int32, v0 int32, v1 int32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLint(v0)
 	_v1 := C.GLint(v1)
 	C.glProgramUniform2i(_program, _location, _v0, _v1)
 }
-/*func ProgramUniform2iv(program uint, location int, count int, value ???){
+func ProgramUniform2iv(program uint32, location int32, count int32, value *int32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLint)(unsafe.Pointer(value))
 	C.glProgramUniform2iv(_program, _location, _count, _value)
-}*/
-func ProgramUniform2f(program uint, location int, v0 float32, v1 float32){
+}
+func ProgramUniform2f(program uint32, location int32, v0 float32, v1 float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLfloat(v0)
 	_v1 := C.GLfloat(v1)
 	C.glProgramUniform2f(_program, _location, _v0, _v1)
 }
-/*func ProgramUniform2fv(program uint, location int, count int, value ???){
+func ProgramUniform2fv(program uint32, location int32, count int32, value *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glProgramUniform2fv(_program, _location, _count, _value)
-}*/
-func ProgramUniform2d(program uint, location int, v0 float64, v1 float64){
+}
+func ProgramUniform2d(program uint32, location int32, v0 float64, v1 float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLdouble(v0)
 	_v1 := C.GLdouble(v1)
 	C.glProgramUniform2d(_program, _location, _v0, _v1)
 }
-/*func ProgramUniform2dv(program uint, location int, count int, value ???){
+func ProgramUniform2dv(program uint32, location int32, count int32, value *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glProgramUniform2dv(_program, _location, _count, _value)
-}*/
-func ProgramUniform2ui(program uint, location int, v0 uint, v1 uint){
+}
+func ProgramUniform2ui(program uint32, location int32, v0 uint32, v1 uint32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLuint(v0)
 	_v1 := C.GLuint(v1)
 	C.glProgramUniform2ui(_program, _location, _v0, _v1)
 }
-/*func ProgramUniform2uiv(program uint, location int, count int, value ???){
+func ProgramUniform2uiv(program uint32, location int32, count int32, value *uint32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLuint)(unsafe.Pointer(value))
 	C.glProgramUniform2uiv(_program, _location, _count, _value)
-}*/
-func ProgramUniform3i(program uint, location int, v0 int, v1 int, v2 int){
+}
+func ProgramUniform3i(program uint32, location int32, v0 int32, v1 int32, v2 int32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLint(v0)
@@ -4186,14 +4187,14 @@ func ProgramUniform3i(program uint, location int, v0 int, v1 int, v2 int){
 	_v2 := C.GLint(v2)
 	C.glProgramUniform3i(_program, _location, _v0, _v1, _v2)
 }
-/*func ProgramUniform3iv(program uint, location int, count int, value ???){
+func ProgramUniform3iv(program uint32, location int32, count int32, value *int32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLint)(unsafe.Pointer(value))
 	C.glProgramUniform3iv(_program, _location, _count, _value)
-}*/
-func ProgramUniform3f(program uint, location int, v0 float32, v1 float32, v2 float32){
+}
+func ProgramUniform3f(program uint32, location int32, v0 float32, v1 float32, v2 float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLfloat(v0)
@@ -4201,14 +4202,14 @@ func ProgramUniform3f(program uint, location int, v0 float32, v1 float32, v2 flo
 	_v2 := C.GLfloat(v2)
 	C.glProgramUniform3f(_program, _location, _v0, _v1, _v2)
 }
-/*func ProgramUniform3fv(program uint, location int, count int, value ???){
+func ProgramUniform3fv(program uint32, location int32, count int32, value *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glProgramUniform3fv(_program, _location, _count, _value)
-}*/
-func ProgramUniform3d(program uint, location int, v0 float64, v1 float64, v2 float64){
+}
+func ProgramUniform3d(program uint32, location int32, v0 float64, v1 float64, v2 float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLdouble(v0)
@@ -4216,14 +4217,14 @@ func ProgramUniform3d(program uint, location int, v0 float64, v1 float64, v2 flo
 	_v2 := C.GLdouble(v2)
 	C.glProgramUniform3d(_program, _location, _v0, _v1, _v2)
 }
-/*func ProgramUniform3dv(program uint, location int, count int, value ???){
+func ProgramUniform3dv(program uint32, location int32, count int32, value *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glProgramUniform3dv(_program, _location, _count, _value)
-}*/
-func ProgramUniform3ui(program uint, location int, v0 uint, v1 uint, v2 uint){
+}
+func ProgramUniform3ui(program uint32, location int32, v0 uint32, v1 uint32, v2 uint32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLuint(v0)
@@ -4231,14 +4232,14 @@ func ProgramUniform3ui(program uint, location int, v0 uint, v1 uint, v2 uint){
 	_v2 := C.GLuint(v2)
 	C.glProgramUniform3ui(_program, _location, _v0, _v1, _v2)
 }
-/*func ProgramUniform3uiv(program uint, location int, count int, value ???){
+func ProgramUniform3uiv(program uint32, location int32, count int32, value *uint32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLuint)(unsafe.Pointer(value))
 	C.glProgramUniform3uiv(_program, _location, _count, _value)
-}*/
-func ProgramUniform4i(program uint, location int, v0 int, v1 int, v2 int, v3 int){
+}
+func ProgramUniform4i(program uint32, location int32, v0 int32, v1 int32, v2 int32, v3 int32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLint(v0)
@@ -4247,14 +4248,14 @@ func ProgramUniform4i(program uint, location int, v0 int, v1 int, v2 int, v3 int
 	_v3 := C.GLint(v3)
 	C.glProgramUniform4i(_program, _location, _v0, _v1, _v2, _v3)
 }
-/*func ProgramUniform4iv(program uint, location int, count int, value ???){
+func ProgramUniform4iv(program uint32, location int32, count int32, value *int32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLint)(unsafe.Pointer(value))
 	C.glProgramUniform4iv(_program, _location, _count, _value)
-}*/
-func ProgramUniform4f(program uint, location int, v0 float32, v1 float32, v2 float32, v3 float32){
+}
+func ProgramUniform4f(program uint32, location int32, v0 float32, v1 float32, v2 float32, v3 float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLfloat(v0)
@@ -4263,14 +4264,14 @@ func ProgramUniform4f(program uint, location int, v0 float32, v1 float32, v2 flo
 	_v3 := C.GLfloat(v3)
 	C.glProgramUniform4f(_program, _location, _v0, _v1, _v2, _v3)
 }
-/*func ProgramUniform4fv(program uint, location int, count int, value ???){
+func ProgramUniform4fv(program uint32, location int32, count int32, value *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glProgramUniform4fv(_program, _location, _count, _value)
-}*/
-func ProgramUniform4d(program uint, location int, v0 float64, v1 float64, v2 float64, v3 float64){
+}
+func ProgramUniform4d(program uint32, location int32, v0 float64, v1 float64, v2 float64, v3 float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLdouble(v0)
@@ -4279,14 +4280,14 @@ func ProgramUniform4d(program uint, location int, v0 float64, v1 float64, v2 flo
 	_v3 := C.GLdouble(v3)
 	C.glProgramUniform4d(_program, _location, _v0, _v1, _v2, _v3)
 }
-/*func ProgramUniform4dv(program uint, location int, count int, value ???){
+func ProgramUniform4dv(program uint32, location int32, count int32, value *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glProgramUniform4dv(_program, _location, _count, _value)
-}*/
-func ProgramUniform4ui(program uint, location int, v0 uint, v1 uint, v2 uint, v3 uint){
+}
+func ProgramUniform4ui(program uint32, location int32, v0 uint32, v1 uint32, v2 uint32, v3 uint32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_v0 := C.GLuint(v0)
@@ -4295,187 +4296,187 @@ func ProgramUniform4ui(program uint, location int, v0 uint, v1 uint, v2 uint, v3
 	_v3 := C.GLuint(v3)
 	C.glProgramUniform4ui(_program, _location, _v0, _v1, _v2, _v3)
 }
-/*func ProgramUniform4uiv(program uint, location int, count int, value ???){
+func ProgramUniform4uiv(program uint32, location int32, count int32, value *uint32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	panic()
+	_value := (*C.GLuint)(unsafe.Pointer(value))
 	C.glProgramUniform4uiv(_program, _location, _count, _value)
-}*/
-/*func ProgramUniformMatrix2fv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix2fv(program uint32, location int32, count int32, transpose bool, value *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix2fv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix3fv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix3fv(program uint32, location int32, count int32, transpose bool, value *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix3fv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix4fv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix4fv(program uint32, location int32, count int32, transpose bool, value *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix4fv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix2dv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix2dv(program uint32, location int32, count int32, transpose bool, value *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix2dv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix3dv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix3dv(program uint32, location int32, count int32, transpose bool, value *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix3dv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix4dv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix4dv(program uint32, location int32, count int32, transpose bool, value *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix4dv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix2x3fv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix2x3fv(program uint32, location int32, count int32, transpose bool, value *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix2x3fv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix3x2fv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix3x2fv(program uint32, location int32, count int32, transpose bool, value *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix3x2fv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix2x4fv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix2x4fv(program uint32, location int32, count int32, transpose bool, value *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix2x4fv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix4x2fv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix4x2fv(program uint32, location int32, count int32, transpose bool, value *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix4x2fv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix3x4fv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix3x4fv(program uint32, location int32, count int32, transpose bool, value *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix3x4fv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix4x3fv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix4x3fv(program uint32, location int32, count int32, transpose bool, value *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLfloat)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix4x3fv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix2x3dv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix2x3dv(program uint32, location int32, count int32, transpose bool, value *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix2x3dv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix3x2dv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix3x2dv(program uint32, location int32, count int32, transpose bool, value *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix3x2dv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix2x4dv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix2x4dv(program uint32, location int32, count int32, transpose bool, value *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix2x4dv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix4x2dv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix4x2dv(program uint32, location int32, count int32, transpose bool, value *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix4x2dv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix3x4dv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix3x4dv(program uint32, location int32, count int32, transpose bool, value *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix3x4dv(_program, _location, _count, _transpose, _value)
-}*/
-/*func ProgramUniformMatrix4x3dv(program uint, location int, count int, transpose bool, value ???){
+}
+func ProgramUniformMatrix4x3dv(program uint32, location int32, count int32, transpose bool, value *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
-	_transpose := C.GLboolean(1);if !transpose{_transpose=C.GLboolean(0)}
-	panic()
+	_transpose := C.GLboolean(TRUE);if !transpose{_transpose=C.GLboolean(FALSE)}
+	_value := (*C.GLdouble)(unsafe.Pointer(value))
 	C.glProgramUniformMatrix4x3dv(_program, _location, _count, _transpose, _value)
-}*/
-func ValidateProgramPipeline(pipeline uint){
+}
+func ValidateProgramPipeline(pipeline uint32){
 	_pipeline := C.GLuint(pipeline)
 	C.glValidateProgramPipeline(_pipeline)
 }
-/*func GetProgramPipelineInfoLog(pipeline uint, bufSize int, length int, infoLog int){
+func GetProgramPipelineInfoLog(pipeline uint32, bufSize int32, length *int32, infoLog *byte){
 	_pipeline := C.GLuint(pipeline)
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
-	panic()
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_infoLog := (*C.GLchar)(unsafe.Pointer(infoLog))
 	C.glGetProgramPipelineInfoLog(_pipeline, _bufSize, _length, _infoLog)
-}*/
-func VertexAttribL1d(index uint, x float64){
+}
+func VertexAttribL1d(index uint32, x float64){
 	_index := C.GLuint(index)
 	_x := C.GLdouble(x)
 	C.glVertexAttribL1d(_index, _x)
 }
-func VertexAttribL2d(index uint, x float64, y float64){
+func VertexAttribL2d(index uint32, x float64, y float64){
 	_index := C.GLuint(index)
 	_x := C.GLdouble(x)
 	_y := C.GLdouble(y)
 	C.glVertexAttribL2d(_index, _x, _y)
 }
-func VertexAttribL3d(index uint, x float64, y float64, z float64){
+func VertexAttribL3d(index uint32, x float64, y float64, z float64){
 	_index := C.GLuint(index)
 	_x := C.GLdouble(x)
 	_y := C.GLdouble(y)
 	_z := C.GLdouble(z)
 	C.glVertexAttribL3d(_index, _x, _y, _z)
 }
-func VertexAttribL4d(index uint, x float64, y float64, z float64, w float64){
+func VertexAttribL4d(index uint32, x float64, y float64, z float64, w float64){
 	_index := C.GLuint(index)
 	_x := C.GLdouble(x)
 	_y := C.GLdouble(y)
@@ -4483,47 +4484,47 @@ func VertexAttribL4d(index uint, x float64, y float64, z float64, w float64){
 	_w := C.GLdouble(w)
 	C.glVertexAttribL4d(_index, _x, _y, _z, _w)
 }
-/*func VertexAttribL1dv(index uint, v ???){
+func VertexAttribL1dv(index uint32, v *float64){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLdouble)(unsafe.Pointer(v))
 	C.glVertexAttribL1dv(_index, _v)
-}*/
-/*func VertexAttribL2dv(index uint, v ???){
+}
+func VertexAttribL2dv(index uint32, v *float64){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLdouble)(unsafe.Pointer(v))
 	C.glVertexAttribL2dv(_index, _v)
-}*/
-/*func VertexAttribL3dv(index uint, v ???){
+}
+func VertexAttribL3dv(index uint32, v *float64){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLdouble)(unsafe.Pointer(v))
 	C.glVertexAttribL3dv(_index, _v)
-}*/
-/*func VertexAttribL4dv(index uint, v ???){
+}
+func VertexAttribL4dv(index uint32, v *float64){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLdouble)(unsafe.Pointer(v))
 	C.glVertexAttribL4dv(_index, _v)
-}*/
-/*func VertexAttribLPointer(index uint, size int, whichtype int, stride int, pointer ???){
+}
+func VertexAttribLPointer(index uint32, size int32, whichtype int32, stride int32, pointer uintptr){
 	_index := C.GLuint(index)
 	_size := C.GLint(size)
 	_whichtype := C.GLenum(whichtype)
 	_stride := C.GLsizei(stride)
-	panic()
+	_pointer := unsafe.Pointer(pointer)
 	C.glVertexAttribLPointer(_index, _size, _whichtype, _stride, _pointer)
-}*/
-/*func GetVertexAttribLdv(index uint, pname int, params ???){
+}
+func GetVertexAttribLdv(index uint32, pname int32, params *float64){
 	_index := C.GLuint(index)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLdouble)(unsafe.Pointer(params))
 	C.glGetVertexAttribLdv(_index, _pname, _params)
-}*/
-/*func ViewportArrayv(first uint, count int, v ???){
+}
+func ViewportArrayv(first uint32, count int32, v *float32){
 	_first := C.GLuint(first)
 	_count := C.GLsizei(count)
-	panic()
+	_v := (*C.GLfloat)(unsafe.Pointer(v))
 	C.glViewportArrayv(_first, _count, _v)
-}*/
-func ViewportIndexedf(index uint, x float32, y float32, w float32, h float32){
+}
+func ViewportIndexedf(index uint32, x float32, y float32, w float32, h float32){
 	_index := C.GLuint(index)
 	_x := C.GLfloat(x)
 	_y := C.GLfloat(y)
@@ -4531,18 +4532,18 @@ func ViewportIndexedf(index uint, x float32, y float32, w float32, h float32){
 	_h := C.GLfloat(h)
 	C.glViewportIndexedf(_index, _x, _y, _w, _h)
 }
-/*func ViewportIndexedfv(index uint, v ???){
+func ViewportIndexedfv(index uint32, v *float32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLfloat)(unsafe.Pointer(v))
 	C.glViewportIndexedfv(_index, _v)
-}*/
-/*func ScissorArrayv(first uint, count int, v ???){
+}
+func ScissorArrayv(first uint32, count int32, v *int32){
 	_first := C.GLuint(first)
 	_count := C.GLsizei(count)
-	panic()
+	_v := (*C.GLint)(unsafe.Pointer(v))
 	C.glScissorArrayv(_first, _count, _v)
-}*/
-func ScissorIndexed(index uint, left int, bottom int, width int, height int){
+}
+func ScissorIndexed(index uint32, left int32, bottom int32, width int32, height int32){
 	_index := C.GLuint(index)
 	_left := C.GLint(left)
 	_bottom := C.GLint(bottom)
@@ -4550,36 +4551,36 @@ func ScissorIndexed(index uint, left int, bottom int, width int, height int){
 	_height := C.GLsizei(height)
 	C.glScissorIndexed(_index, _left, _bottom, _width, _height)
 }
-/*func ScissorIndexedv(index uint, v ???){
+func ScissorIndexedv(index uint32, v *int32){
 	_index := C.GLuint(index)
-	panic()
+	_v := (*C.GLint)(unsafe.Pointer(v))
 	C.glScissorIndexedv(_index, _v)
-}*/
-/*func DepthRangeArrayv(first uint, count int, v ???){
+}
+func DepthRangeArrayv(first uint32, count int32, v *float64){
 	_first := C.GLuint(first)
 	_count := C.GLsizei(count)
-	panic()
+	_v := (*C.GLdouble)(unsafe.Pointer(v))
 	C.glDepthRangeArrayv(_first, _count, _v)
-}*/
-func DepthRangeIndexed(index uint, n float64, f float64){
+}
+func DepthRangeIndexed(index uint32, n float64, f float64){
 	_index := C.GLuint(index)
 	_n := C.GLdouble(n)
 	_f := C.GLdouble(f)
 	C.glDepthRangeIndexed(_index, _n, _f)
 }
-/*func GetFloati_v(target int, index uint, data ???){
+func GetFloati_v(target int32, index uint32, data *float32){
 	_target := C.GLenum(target)
 	_index := C.GLuint(index)
-	panic()
+	_data := (*C.GLfloat)(unsafe.Pointer(data))
 	C.glGetFloati_v(_target, _index, _data)
-}*/
-/*func GetDoublei_v(target int, index uint, data ???){
+}
+func GetDoublei_v(target int32, index uint32, data *float64){
 	_target := C.GLenum(target)
 	_index := C.GLuint(index)
-	panic()
+	_data := (*C.GLdouble)(unsafe.Pointer(data))
 	C.glGetDoublei_v(_target, _index, _data)
-}*/
-func DrawArraysInstancedBaseInstance(mode int, first int, count int, instancecount int, baseinstance uint){
+}
+func DrawArraysInstancedBaseInstance(mode int32, first int32, count int32, instancecount int32, baseinstance uint32){
 	_mode := C.GLenum(mode)
 	_first := C.GLint(first)
 	_count := C.GLsizei(count)
@@ -4587,62 +4588,62 @@ func DrawArraysInstancedBaseInstance(mode int, first int, count int, instancecou
 	_baseinstance := C.GLuint(baseinstance)
 	C.glDrawArraysInstancedBaseInstance(_mode, _first, _count, _instancecount, _baseinstance)
 }
-/*func DrawElementsInstancedBaseInstance(mode int, count int, whichtype int, indices ???, instancecount int, baseinstance uint){
+func DrawElementsInstancedBaseInstance(mode int32, count int32, whichtype int32, indices uintptr, instancecount int32, baseinstance uint32){
 	_mode := C.GLenum(mode)
 	_count := C.GLsizei(count)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_indices := unsafe.Pointer(indices)
 	_instancecount := C.GLsizei(instancecount)
 	_baseinstance := C.GLuint(baseinstance)
 	C.glDrawElementsInstancedBaseInstance(_mode, _count, _whichtype, _indices, _instancecount, _baseinstance)
-}*/
-/*func DrawElementsInstancedBaseVertexBaseInstance(mode int, count int, whichtype int, indices ???, instancecount int, basevertex int, baseinstance uint){
+}
+func DrawElementsInstancedBaseVertexBaseInstance(mode int32, count int32, whichtype int32, indices uintptr, instancecount int32, basevertex int32, baseinstance uint32){
 	_mode := C.GLenum(mode)
 	_count := C.GLsizei(count)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_indices := unsafe.Pointer(indices)
 	_instancecount := C.GLsizei(instancecount)
 	_basevertex := C.GLint(basevertex)
 	_baseinstance := C.GLuint(baseinstance)
 	C.glDrawElementsInstancedBaseVertexBaseInstance(_mode, _count, _whichtype, _indices, _instancecount, _basevertex, _baseinstance)
-}*/
-/*func GetInternalformativ(target int, internalformat int, pname int, bufSize int, params ???){
+}
+func GetInternalformativ(target int32, internalformat int32, pname int32, bufSize int32, params *int32){
 	_target := C.GLenum(target)
 	_internalformat := C.GLenum(internalformat)
 	_pname := C.GLenum(pname)
 	_bufSize := C.GLsizei(bufSize)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetInternalformativ(_target, _internalformat, _pname, _bufSize, _params)
-}*/
-/*func GetActiveAtomicCounterBufferiv(program uint, bufferIndex uint, pname int, params ???){
+}
+func GetActiveAtomicCounterBufferiv(program uint32, bufferIndex uint32, pname int32, params *int32){
 	_program := C.GLuint(program)
 	_bufferIndex := C.GLuint(bufferIndex)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetActiveAtomicCounterBufferiv(_program, _bufferIndex, _pname, _params)
-}*/
-func BindImageTexture(unit uint, texture uint, level int, layered bool, layer int, access int, format int){
+}
+func BindImageTexture(unit uint32, texture uint32, level int32, layered bool, layer int32, access int32, format int32){
 	_unit := C.GLuint(unit)
 	_texture := C.GLuint(texture)
 	_level := C.GLint(level)
-	_layered := C.GLboolean(1);if !layered{_layered=C.GLboolean(0)}
+	_layered := C.GLboolean(TRUE);if !layered{_layered=C.GLboolean(FALSE)}
 	_layer := C.GLint(layer)
 	_access := C.GLenum(access)
 	_format := C.GLenum(format)
 	C.glBindImageTexture(_unit, _texture, _level, _layered, _layer, _access, _format)
 }
-func MemoryBarrier(barriers uint){
+func MemoryBarrier(barriers uint32){
 	_barriers := C.GLbitfield(barriers)
 	C.glMemoryBarrier(_barriers)
 }
-func TexStorage1D(target int, levels int, internalformat int, width int){
+func TexStorage1D(target int32, levels int32, internalformat int32, width int32){
 	_target := C.GLenum(target)
 	_levels := C.GLsizei(levels)
 	_internalformat := C.GLenum(internalformat)
 	_width := C.GLsizei(width)
 	C.glTexStorage1D(_target, _levels, _internalformat, _width)
 }
-func TexStorage2D(target int, levels int, internalformat int, width int, height int){
+func TexStorage2D(target int32, levels int32, internalformat int32, width int32, height int32){
 	_target := C.GLenum(target)
 	_levels := C.GLsizei(levels)
 	_internalformat := C.GLenum(internalformat)
@@ -4650,7 +4651,7 @@ func TexStorage2D(target int, levels int, internalformat int, width int, height 
 	_height := C.GLsizei(height)
 	C.glTexStorage2D(_target, _levels, _internalformat, _width, _height)
 }
-func TexStorage3D(target int, levels int, internalformat int, width int, height int, depth int){
+func TexStorage3D(target int32, levels int32, internalformat int32, width int32, height int32, depth int32){
 	_target := C.GLenum(target)
 	_levels := C.GLsizei(levels)
 	_internalformat := C.GLenum(internalformat)
@@ -4659,48 +4660,48 @@ func TexStorage3D(target int, levels int, internalformat int, width int, height 
 	_depth := C.GLsizei(depth)
 	C.glTexStorage3D(_target, _levels, _internalformat, _width, _height, _depth)
 }
-func DrawTransformFeedbackInstanced(mode int, id uint, instancecount int){
+func DrawTransformFeedbackInstanced(mode int32, id uint32, instancecount int32){
 	_mode := C.GLenum(mode)
 	_id := C.GLuint(id)
 	_instancecount := C.GLsizei(instancecount)
 	C.glDrawTransformFeedbackInstanced(_mode, _id, _instancecount)
 }
-func DrawTransformFeedbackStreamInstanced(mode int, id uint, stream uint, instancecount int){
+func DrawTransformFeedbackStreamInstanced(mode int32, id uint32, stream uint32, instancecount int32){
 	_mode := C.GLenum(mode)
 	_id := C.GLuint(id)
 	_stream := C.GLuint(stream)
 	_instancecount := C.GLsizei(instancecount)
 	C.glDrawTransformFeedbackStreamInstanced(_mode, _id, _stream, _instancecount)
 }
-/*func ClearBufferData(target int, internalformat int, format int, whichtype int, data ???){
+func ClearBufferData(target int32, internalformat int32, format int32, whichtype int32, data uintptr){
 	_target := C.GLenum(target)
 	_internalformat := C.GLenum(internalformat)
 	_format := C.GLenum(format)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_data := unsafe.Pointer(data)
 	C.glClearBufferData(_target, _internalformat, _format, _whichtype, _data)
-}*/
-/*func ClearBufferSubData(target int, internalformat int, offset ???, size int, format int, whichtype int, data ???){
+}
+func ClearBufferSubData(target int32, internalformat int32, offset uintptr, size int32, format int32, whichtype int32, data uintptr){
 	_target := C.GLenum(target)
 	_internalformat := C.GLenum(internalformat)
-	panic()
+	_offset :=C.GLintptr(offset)
 	_size := C.GLsizeiptr(size)
 	_format := C.GLenum(format)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_data := unsafe.Pointer(data)
 	C.glClearBufferSubData(_target, _internalformat, _offset, _size, _format, _whichtype, _data)
-}*/
-func DispatchCompute(num_groups_x uint, num_groups_y uint, num_groups_z uint){
+}
+func DispatchCompute(num_groups_x uint32, num_groups_y uint32, num_groups_z uint32){
 	_num_groups_x := C.GLuint(num_groups_x)
 	_num_groups_y := C.GLuint(num_groups_y)
 	_num_groups_z := C.GLuint(num_groups_z)
 	C.glDispatchCompute(_num_groups_x, _num_groups_y, _num_groups_z)
 }
-/*func DispatchComputeIndirect(indirect ???){
-	panic()
+func DispatchComputeIndirect(indirect uintptr){
+	_indirect :=C.GLintptr(indirect)
 	C.glDispatchComputeIndirect(_indirect)
-}*/
-func CopyImageSubData(srcName uint, srcTarget int, srcLevel int, srcX int, srcY int, srcZ int, dstName uint, dstTarget int, dstLevel int, dstX int, dstY int, dstZ int, srcWidth int, srcHeight int, srcDepth int){
+}
+func CopyImageSubData(srcName uint32, srcTarget int32, srcLevel int32, srcX int32, srcY int32, srcZ int32, dstName uint32, dstTarget int32, dstLevel int32, dstX int32, dstY int32, dstZ int32, srcWidth int32, srcHeight int32, srcDepth int32){
 	_srcName := C.GLuint(srcName)
 	_srcTarget := C.GLenum(srcTarget)
 	_srcLevel := C.GLint(srcLevel)
@@ -4718,27 +4719,27 @@ func CopyImageSubData(srcName uint, srcTarget int, srcLevel int, srcX int, srcY 
 	_srcDepth := C.GLsizei(srcDepth)
 	C.glCopyImageSubData(_srcName, _srcTarget, _srcLevel, _srcX, _srcY, _srcZ, _dstName, _dstTarget, _dstLevel, _dstX, _dstY, _dstZ, _srcWidth, _srcHeight, _srcDepth)
 }
-func FramebufferParameteri(target int, pname int, param int){
+func FramebufferParameteri(target int32, pname int32, param int32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
 	_param := C.GLint(param)
 	C.glFramebufferParameteri(_target, _pname, _param)
 }
-/*func GetFramebufferParameteriv(target int, pname int, params ???){
+func GetFramebufferParameteriv(target int32, pname int32, params *int32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetFramebufferParameteriv(_target, _pname, _params)
-}*/
-/*func GetInternalformati64v(target int, internalformat int, pname int, bufSize int, params ???){
+}
+func GetInternalformati64v(target int32, internalformat int32, pname int32, bufSize int32, params *int64){
 	_target := C.GLenum(target)
 	_internalformat := C.GLenum(internalformat)
 	_pname := C.GLenum(pname)
 	_bufSize := C.GLsizei(bufSize)
-	panic()
+	_params := (*C.GLint64)(unsafe.Pointer(params))
 	C.glGetInternalformati64v(_target, _internalformat, _pname, _bufSize, _params)
-}*/
-func InvalidateTexSubImage(texture uint, level int, xoffset int, yoffset int, zoffset int, width int, height int, depth int){
+}
+func InvalidateTexSubImage(texture uint32, level int32, xoffset int32, yoffset int32, zoffset int32, width int32, height int32, depth int32){
 	_texture := C.GLuint(texture)
 	_level := C.GLint(level)
 	_xoffset := C.GLint(xoffset)
@@ -4749,137 +4750,137 @@ func InvalidateTexSubImage(texture uint, level int, xoffset int, yoffset int, zo
 	_depth := C.GLsizei(depth)
 	C.glInvalidateTexSubImage(_texture, _level, _xoffset, _yoffset, _zoffset, _width, _height, _depth)
 }
-func InvalidateTexImage(texture uint, level int){
+func InvalidateTexImage(texture uint32, level int32){
 	_texture := C.GLuint(texture)
 	_level := C.GLint(level)
 	C.glInvalidateTexImage(_texture, _level)
 }
-/*func InvalidateBufferSubData(buffer uint, offset ???, length int){
+func InvalidateBufferSubData(buffer uint32, offset uintptr, length int32){
 	_buffer := C.GLuint(buffer)
-	panic()
+	_offset :=C.GLintptr(offset)
 	_length := C.GLsizeiptr(length)
 	C.glInvalidateBufferSubData(_buffer, _offset, _length)
-}*/
-func InvalidateBufferData(buffer uint){
+}
+func InvalidateBufferData(buffer uint32){
 	_buffer := C.GLuint(buffer)
 	C.glInvalidateBufferData(_buffer)
 }
-/*func InvalidateFramebuffer(target int, numAttachments int, attachments ???){
+func InvalidateFramebuffer(target int32, numAttachments int32, attachments *uint32){
 	_target := C.GLenum(target)
 	_numAttachments := C.GLsizei(numAttachments)
-	panic()
+	_attachments := (*C.GLenum)(unsafe.Pointer(attachments))
 	C.glInvalidateFramebuffer(_target, _numAttachments, _attachments)
-}*/
-/*func InvalidateSubFramebuffer(target int, numAttachments int, attachments ???, x int, y int, width int, height int){
+}
+func InvalidateSubFramebuffer(target int32, numAttachments int32, attachments *uint32, x int32, y int32, width int32, height int32){
 	_target := C.GLenum(target)
 	_numAttachments := C.GLsizei(numAttachments)
-	panic()
+	_attachments := (*C.GLenum)(unsafe.Pointer(attachments))
 	_x := C.GLint(x)
 	_y := C.GLint(y)
 	_width := C.GLsizei(width)
 	_height := C.GLsizei(height)
 	C.glInvalidateSubFramebuffer(_target, _numAttachments, _attachments, _x, _y, _width, _height)
-}*/
-/*func MultiDrawArraysIndirect(mode int, indirect ???, drawcount int, stride int){
+}
+func MultiDrawArraysIndirect(mode int32, indirect uintptr, drawcount int32, stride int32){
 	_mode := C.GLenum(mode)
-	panic()
+	_indirect := unsafe.Pointer(indirect)
 	_drawcount := C.GLsizei(drawcount)
 	_stride := C.GLsizei(stride)
 	C.glMultiDrawArraysIndirect(_mode, _indirect, _drawcount, _stride)
-}*/
-/*func MultiDrawElementsIndirect(mode int, whichtype int, indirect ???, drawcount int, stride int){
+}
+func MultiDrawElementsIndirect(mode int32, whichtype int32, indirect uintptr, drawcount int32, stride int32){
 	_mode := C.GLenum(mode)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_indirect := unsafe.Pointer(indirect)
 	_drawcount := C.GLsizei(drawcount)
 	_stride := C.GLsizei(stride)
 	C.glMultiDrawElementsIndirect(_mode, _whichtype, _indirect, _drawcount, _stride)
-}*/
-/*func GetProgramInterfaceiv(program uint, programInterface int, pname int, params ???){
+}
+func GetProgramInterfaceiv(program uint32, programInterface int32, pname int32, params *int32){
 	_program := C.GLuint(program)
 	_programInterface := C.GLenum(programInterface)
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetProgramInterfaceiv(_program, _programInterface, _pname, _params)
-}*/
-/*func GetProgramResourceIndex(program uint, programInterface int, name ???)uint{
+}
+func GetProgramResourceIndex(program uint32, programInterface int32, name *byte)uint32{
 	_program := C.GLuint(program)
 	_programInterface := C.GLenum(programInterface)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	returnvalue := C.glGetProgramResourceIndex(_program, _programInterface, _name)
-	panic()
+	convreturnvalue := uint32(returnvalue)
 return convreturnvalue
-}*/
-/*func GetProgramResourceName(program uint, programInterface int, index uint, bufSize int, length int, name int){
+}
+func GetProgramResourceName(program uint32, programInterface int32, index uint32, bufSize int32, length *int32, name *byte){
 	_program := C.GLuint(program)
 	_programInterface := C.GLenum(programInterface)
 	_index := C.GLuint(index)
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
-	panic()
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	C.glGetProgramResourceName(_program, _programInterface, _index, _bufSize, _length, _name)
-}*/
-/*func GetProgramResourceiv(program uint, programInterface int, index uint, propCount int, props ???, bufSize int, length int, params ???){
+}
+func GetProgramResourceiv(program uint32, programInterface int32, index uint32, propCount int32, props *uint32, bufSize int32, length *int32, params *int32){
 	_program := C.GLuint(program)
 	_programInterface := C.GLenum(programInterface)
 	_index := C.GLuint(index)
 	_propCount := C.GLsizei(propCount)
-	panic()
+	_props := (*C.GLenum)(unsafe.Pointer(props))
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
-	panic()
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetProgramResourceiv(_program, _programInterface, _index, _propCount, _props, _bufSize, _length, _params)
-}*/
-/*func GetProgramResourceLocation(program uint, programInterface int, name ???)int{
+}
+func GetProgramResourceLocation(program uint32, programInterface int32, name *byte)int32{
 	_program := C.GLuint(program)
 	_programInterface := C.GLenum(programInterface)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	returnvalue := C.glGetProgramResourceLocation(_program, _programInterface, _name)
-	panic()
+	convreturnvalue := int32(returnvalue)
 return convreturnvalue
-}*/
-/*func GetProgramResourceLocationIndex(program uint, programInterface int, name ???)int{
+}
+func GetProgramResourceLocationIndex(program uint32, programInterface int32, name *byte)int32{
 	_program := C.GLuint(program)
 	_programInterface := C.GLenum(programInterface)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	returnvalue := C.glGetProgramResourceLocationIndex(_program, _programInterface, _name)
-	panic()
+	convreturnvalue := int32(returnvalue)
 return convreturnvalue
-}*/
-func ShaderStorageBlockBinding(program uint, storageBlockIndex uint, storageBlockBinding uint){
+}
+func ShaderStorageBlockBinding(program uint32, storageBlockIndex uint32, storageBlockBinding uint32){
 	_program := C.GLuint(program)
 	_storageBlockIndex := C.GLuint(storageBlockIndex)
 	_storageBlockBinding := C.GLuint(storageBlockBinding)
 	C.glShaderStorageBlockBinding(_program, _storageBlockIndex, _storageBlockBinding)
 }
-/*func TexBufferRange(target int, internalformat int, buffer uint, offset ???, size int){
+func TexBufferRange(target int32, internalformat int32, buffer uint32, offset uintptr, size int32){
 	_target := C.GLenum(target)
 	_internalformat := C.GLenum(internalformat)
 	_buffer := C.GLuint(buffer)
-	panic()
+	_offset :=C.GLintptr(offset)
 	_size := C.GLsizeiptr(size)
 	C.glTexBufferRange(_target, _internalformat, _buffer, _offset, _size)
-}*/
-func TexStorage2DMultisample(target int, samples int, internalformat int, width int, height int, fixedsamplelocations bool){
+}
+func TexStorage2DMultisample(target int32, samples int32, internalformat int32, width int32, height int32, fixedsamplelocations bool){
 	_target := C.GLenum(target)
 	_samples := C.GLsizei(samples)
 	_internalformat := C.GLenum(internalformat)
 	_width := C.GLsizei(width)
 	_height := C.GLsizei(height)
-	_fixedsamplelocations := C.GLboolean(1);if !fixedsamplelocations{_fixedsamplelocations=C.GLboolean(0)}
+	_fixedsamplelocations := C.GLboolean(TRUE);if !fixedsamplelocations{_fixedsamplelocations=C.GLboolean(FALSE)}
 	C.glTexStorage2DMultisample(_target, _samples, _internalformat, _width, _height, _fixedsamplelocations)
 }
-func TexStorage3DMultisample(target int, samples int, internalformat int, width int, height int, depth int, fixedsamplelocations bool){
+func TexStorage3DMultisample(target int32, samples int32, internalformat int32, width int32, height int32, depth int32, fixedsamplelocations bool){
 	_target := C.GLenum(target)
 	_samples := C.GLsizei(samples)
 	_internalformat := C.GLenum(internalformat)
 	_width := C.GLsizei(width)
 	_height := C.GLsizei(height)
 	_depth := C.GLsizei(depth)
-	_fixedsamplelocations := C.GLboolean(1);if !fixedsamplelocations{_fixedsamplelocations=C.GLboolean(0)}
+	_fixedsamplelocations := C.GLboolean(TRUE);if !fixedsamplelocations{_fixedsamplelocations=C.GLboolean(FALSE)}
 	C.glTexStorage3DMultisample(_target, _samples, _internalformat, _width, _height, _depth, _fixedsamplelocations)
 }
-func TextureView(texture uint, target int, origtexture uint, internalformat int, minlevel uint, numlevels uint, minlayer uint, numlayers uint){
+func TextureView(texture uint32, target int32, origtexture uint32, internalformat int32, minlevel uint32, numlevels uint32, minlayer uint32, numlayers uint32){
 	_texture := C.GLuint(texture)
 	_target := C.GLenum(target)
 	_origtexture := C.GLuint(origtexture)
@@ -4890,135 +4891,135 @@ func TextureView(texture uint, target int, origtexture uint, internalformat int,
 	_numlayers := C.GLuint(numlayers)
 	C.glTextureView(_texture, _target, _origtexture, _internalformat, _minlevel, _numlevels, _minlayer, _numlayers)
 }
-/*func BindVertexBuffer(bindingindex uint, buffer uint, offset ???, stride int){
+func BindVertexBuffer(bindingindex uint32, buffer uint32, offset uintptr, stride int32){
 	_bindingindex := C.GLuint(bindingindex)
 	_buffer := C.GLuint(buffer)
-	panic()
+	_offset :=C.GLintptr(offset)
 	_stride := C.GLsizei(stride)
 	C.glBindVertexBuffer(_bindingindex, _buffer, _offset, _stride)
-}*/
-func VertexAttribFormat(attribindex uint, size int, whichtype int, normalized bool, relativeoffset uint){
+}
+func VertexAttribFormat(attribindex uint32, size int32, whichtype int32, normalized bool, relativeoffset uint32){
 	_attribindex := C.GLuint(attribindex)
 	_size := C.GLint(size)
 	_whichtype := C.GLenum(whichtype)
-	_normalized := C.GLboolean(1);if !normalized{_normalized=C.GLboolean(0)}
+	_normalized := C.GLboolean(TRUE);if !normalized{_normalized=C.GLboolean(FALSE)}
 	_relativeoffset := C.GLuint(relativeoffset)
 	C.glVertexAttribFormat(_attribindex, _size, _whichtype, _normalized, _relativeoffset)
 }
-func VertexAttribIFormat(attribindex uint, size int, whichtype int, relativeoffset uint){
+func VertexAttribIFormat(attribindex uint32, size int32, whichtype int32, relativeoffset uint32){
 	_attribindex := C.GLuint(attribindex)
 	_size := C.GLint(size)
 	_whichtype := C.GLenum(whichtype)
 	_relativeoffset := C.GLuint(relativeoffset)
 	C.glVertexAttribIFormat(_attribindex, _size, _whichtype, _relativeoffset)
 }
-func VertexAttribLFormat(attribindex uint, size int, whichtype int, relativeoffset uint){
+func VertexAttribLFormat(attribindex uint32, size int32, whichtype int32, relativeoffset uint32){
 	_attribindex := C.GLuint(attribindex)
 	_size := C.GLint(size)
 	_whichtype := C.GLenum(whichtype)
 	_relativeoffset := C.GLuint(relativeoffset)
 	C.glVertexAttribLFormat(_attribindex, _size, _whichtype, _relativeoffset)
 }
-func VertexAttribBinding(attribindex uint, bindingindex uint){
+func VertexAttribBinding(attribindex uint32, bindingindex uint32){
 	_attribindex := C.GLuint(attribindex)
 	_bindingindex := C.GLuint(bindingindex)
 	C.glVertexAttribBinding(_attribindex, _bindingindex)
 }
-func VertexBindingDivisor(bindingindex uint, divisor uint){
+func VertexBindingDivisor(bindingindex uint32, divisor uint32){
 	_bindingindex := C.GLuint(bindingindex)
 	_divisor := C.GLuint(divisor)
 	C.glVertexBindingDivisor(_bindingindex, _divisor)
 }
-/*func DebugMessageControl(source int, whichtype int, severity int, count int, ids ???, enabled bool){
+func DebugMessageControl(source int32, whichtype int32, severity int32, count int32, ids *uint32, enabled bool){
 	_source := C.GLenum(source)
 	_whichtype := C.GLenum(whichtype)
 	_severity := C.GLenum(severity)
 	_count := C.GLsizei(count)
-	panic()
-	_enabled := C.GLboolean(1);if !enabled{_enabled=C.GLboolean(0)}
+	_ids := (*C.GLuint)(unsafe.Pointer(ids))
+	_enabled := C.GLboolean(TRUE);if !enabled{_enabled=C.GLboolean(FALSE)}
 	C.glDebugMessageControl(_source, _whichtype, _severity, _count, _ids, _enabled)
-}*/
-/*func DebugMessageInsert(source int, whichtype int, id uint, severity int, length int, buf ???){
+}
+func DebugMessageInsert(source int32, whichtype int32, id uint32, severity int32, length int32, buf *byte){
 	_source := C.GLenum(source)
 	_whichtype := C.GLenum(whichtype)
 	_id := C.GLuint(id)
 	_severity := C.GLenum(severity)
 	_length := C.GLsizei(length)
-	panic()
+	_buf := (*C.GLchar)(unsafe.Pointer(buf))
 	C.glDebugMessageInsert(_source, _whichtype, _id, _severity, _length, _buf)
-}*/
-/*func DebugMessageCallback(callback ???, userParam ???){
+}
+/*func DebugMessageCallback(callback ???, userParam uintptr){
 	panic()
-	panic()
+	_userParam := unsafe.Pointer(userParam)
 	C.glDebugMessageCallback(_callback, _userParam)
 }*/
-/*func GetDebugMessageLog(count uint, bufSize int, sources ???, types ???, ids ???, severities ???, lengths int, messageLog int)uint{
+/*func GetDebugMessageLog(count uint32, bufSize int32, sources ???, types ???, ids *uint32, severities ???, lengths *int32, messageLog *byte)uint32{
 	_count := C.GLuint(count)
 	_bufSize := C.GLsizei(bufSize)
 	panic()
 	panic()
+	_ids := (*C.GLuint)(unsafe.Pointer(ids))
 	panic()
-	panic()
-	_lengths := C.GLsizei(lengths)
-	panic()
+	_lengths := (*C.GLsizei)(unsafe.Pointer(lengths))
+	_messageLog := (*C.GLchar)(unsafe.Pointer(messageLog))
 	returnvalue := C.glGetDebugMessageLog(_count, _bufSize, _sources, _types, _ids, _severities, _lengths, _messageLog)
-	panic()
+	convreturnvalue := uint32(returnvalue)
 return convreturnvalue
 }*/
-/*func PushDebugGroup(source int, id uint, length int, message ???){
+func PushDebugGroup(source int32, id uint32, length int32, message *byte){
 	_source := C.GLenum(source)
 	_id := C.GLuint(id)
 	_length := C.GLsizei(length)
-	panic()
+	_message := (*C.GLchar)(unsafe.Pointer(message))
 	C.glPushDebugGroup(_source, _id, _length, _message)
-}*/
+}
 func PopDebugGroup(){
 	C.glPopDebugGroup()
 }
-/*func ObjectLabel(identifier int, name uint, length int, label ???){
+func ObjectLabel(identifier int32, name uint32, length int32, label *byte){
 	_identifier := C.GLenum(identifier)
 	_name := C.GLuint(name)
 	_length := C.GLsizei(length)
-	panic()
+	_label := (*C.GLchar)(unsafe.Pointer(label))
 	C.glObjectLabel(_identifier, _name, _length, _label)
-}*/
-/*func GetObjectLabel(identifier int, name uint, bufSize int, length int, label int){
+}
+func GetObjectLabel(identifier int32, name uint32, bufSize int32, length *int32, label *byte){
 	_identifier := C.GLenum(identifier)
 	_name := C.GLuint(name)
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
-	panic()
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_label := (*C.GLchar)(unsafe.Pointer(label))
 	C.glGetObjectLabel(_identifier, _name, _bufSize, _length, _label)
-}*/
-/*func ObjectPtrLabel(ptr ???, length int, label ???){
-	panic()
+}
+func ObjectPtrLabel(ptr uintptr, length int32, label *byte){
+	_ptr := unsafe.Pointer(ptr)
 	_length := C.GLsizei(length)
-	panic()
+	_label := (*C.GLchar)(unsafe.Pointer(label))
 	C.glObjectPtrLabel(_ptr, _length, _label)
-}*/
-/*func GetObjectPtrLabel(ptr ???, bufSize int, length int, label int){
-	panic()
+}
+func GetObjectPtrLabel(ptr uintptr, bufSize int32, length *int32, label *byte){
+	_ptr := unsafe.Pointer(ptr)
 	_bufSize := C.GLsizei(bufSize)
-	_length := C.GLsizei(length)
-	panic()
+	_length := (*C.GLsizei)(unsafe.Pointer(length))
+	_label := (*C.GLchar)(unsafe.Pointer(label))
 	C.glGetObjectPtrLabel(_ptr, _bufSize, _length, _label)
-}*/
-/*func BufferStorage(target int, size int, data ???, flags uint){
+}
+/*func BufferStorage(target int32, size int32, data uintptr, flags uint32){
 	_target := C.GLenum(target)
 	_size := C.GLsizeiptr(size)
-	panic()
+	_data := unsafe.Pointer(data)
 	_flags := C.GLbitfield(flags)
 	C.glBufferStorage(_target, _size, _data, _flags)
-}*/
-/*func ClearTexImage(texture uint, level int, format int, whichtype int, data ???){
+}*///(blacklisted)
+/*func ClearTexImage(texture uint32, level int32, format int32, whichtype int32, data uintptr){
 	_texture := C.GLuint(texture)
 	_level := C.GLint(level)
 	_format := C.GLenum(format)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_data := unsafe.Pointer(data)
 	C.glClearTexImage(_texture, _level, _format, _whichtype, _data)
-}*/
-/*func ClearTexSubImage(texture uint, level int, xoffset int, yoffset int, zoffset int, width int, height int, depth int, format int, whichtype int, data ???){
+}*///(blacklisted)
+/*func ClearTexSubImage(texture uint32, level int32, xoffset int32, yoffset int32, zoffset int32, width int32, height int32, depth int32, format int32, whichtype int32, data uintptr){
 	_texture := C.GLuint(texture)
 	_level := C.GLint(level)
 	_xoffset := C.GLint(xoffset)
@@ -5029,144 +5030,144 @@ func PopDebugGroup(){
 	_depth := C.GLsizei(depth)
 	_format := C.GLenum(format)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_data := unsafe.Pointer(data)
 	C.glClearTexSubImage(_texture, _level, _xoffset, _yoffset, _zoffset, _width, _height, _depth, _format, _whichtype, _data)
-}*/
-/*func BindBuffersBase(target int, first uint, count int, buffers ???){
+}*///(blacklisted)
+/*func BindBuffersBase(target int32, first uint32, count int32, buffers *uint32){
 	_target := C.GLenum(target)
 	_first := C.GLuint(first)
 	_count := C.GLsizei(count)
-	panic()
+	_buffers := (*C.GLuint)(unsafe.Pointer(buffers))
 	C.glBindBuffersBase(_target, _first, _count, _buffers)
-}*/
-/*func BindBuffersRange(target int, first uint, count int, buffers ???, offsets ???, sizes ???){
+}*///(blacklisted)
+/*func BindBuffersRange(target int32, first uint32, count int32, buffers *uint32, offsets *uintptr, sizes ???){
 	_target := C.GLenum(target)
 	_first := C.GLuint(first)
 	_count := C.GLsizei(count)
-	panic()
-	panic()
+	_buffers := (*C.GLuint)(unsafe.Pointer(buffers))
+	_offsets := (*C.GLintptr)(unsafe.Pointer(offsets))
 	panic()
 	C.glBindBuffersRange(_target, _first, _count, _buffers, _offsets, _sizes)
 }*/
-/*func BindTextures(first uint, count int, textures ???){
+/*func BindTextures(first uint32, count int32, textures *uint32){
 	_first := C.GLuint(first)
 	_count := C.GLsizei(count)
-	panic()
+	_textures := (*C.GLuint)(unsafe.Pointer(textures))
 	C.glBindTextures(_first, _count, _textures)
-}*/
-/*func BindSamplers(first uint, count int, samplers ???){
+}*///(blacklisted)
+/*func BindSamplers(first uint32, count int32, samplers *uint32){
 	_first := C.GLuint(first)
 	_count := C.GLsizei(count)
-	panic()
+	_samplers := (*C.GLuint)(unsafe.Pointer(samplers))
 	C.glBindSamplers(_first, _count, _samplers)
-}*/
-/*func BindImageTextures(first uint, count int, textures ???){
+}*///(blacklisted)
+/*func BindImageTextures(first uint32, count int32, textures *uint32){
 	_first := C.GLuint(first)
 	_count := C.GLsizei(count)
-	panic()
+	_textures := (*C.GLuint)(unsafe.Pointer(textures))
 	C.glBindImageTextures(_first, _count, _textures)
-}*/
-/*func BindVertexBuffers(first uint, count int, buffers ???, offsets ???, strides ???){
+}*///(blacklisted)
+/*func BindVertexBuffers(first uint32, count int32, buffers *uint32, offsets *uintptr, strides ???){
 	_first := C.GLuint(first)
 	_count := C.GLsizei(count)
-	panic()
-	panic()
+	_buffers := (*C.GLuint)(unsafe.Pointer(buffers))
+	_offsets := (*C.GLintptr)(unsafe.Pointer(offsets))
 	panic()
 	C.glBindVertexBuffers(_first, _count, _buffers, _offsets, _strides)
 }*/
-/*func GetTextureHandleARB(texture uint)???{
+/*func GetTextureHandleARB(texture uint32)*uint64{
 	_texture := C.GLuint(texture)
 	returnvalue := C.glGetTextureHandleARB(_texture)
 	panic()
 return convreturnvalue
 }*/
-/*func GetTextureSamplerHandleARB(texture uint, sampler uint)???{
+/*func GetTextureSamplerHandleARB(texture uint32, sampler uint32)*uint64{
 	_texture := C.GLuint(texture)
 	_sampler := C.GLuint(sampler)
 	returnvalue := C.glGetTextureSamplerHandleARB(_texture, _sampler)
 	panic()
 return convreturnvalue
 }*/
-/*func MakeTextureHandleResidentARB(handle ???){
-	panic()
+/*func MakeTextureHandleResidentARB(handle *uint64){
+	_handle := (*C.GLuint64)(unsafe.Pointer(handle))
 	C.glMakeTextureHandleResidentARB(_handle)
-}*/
-/*func MakeTextureHandleNonResidentARB(handle ???){
-	panic()
+}*///(blacklisted)
+/*func MakeTextureHandleNonResidentARB(handle *uint64){
+	_handle := (*C.GLuint64)(unsafe.Pointer(handle))
 	C.glMakeTextureHandleNonResidentARB(_handle)
-}*/
-/*func GetImageHandleARB(texture uint, level int, layered bool, layer int, format int)???{
+}*///(blacklisted)
+/*func GetImageHandleARB(texture uint32, level int32, layered bool, layer int32, format int32)*uint64{
 	_texture := C.GLuint(texture)
 	_level := C.GLint(level)
-	_layered := C.GLboolean(1);if !layered{_layered=C.GLboolean(0)}
+	_layered := C.GLboolean(TRUE);if !layered{_layered=C.GLboolean(FALSE)}
 	_layer := C.GLint(layer)
 	_format := C.GLenum(format)
 	returnvalue := C.glGetImageHandleARB(_texture, _level, _layered, _layer, _format)
 	panic()
 return convreturnvalue
 }*/
-/*func MakeImageHandleResidentARB(handle ???, access int){
-	panic()
+/*func MakeImageHandleResidentARB(handle *uint64, access int32){
+	_handle := (*C.GLuint64)(unsafe.Pointer(handle))
 	_access := C.GLenum(access)
 	C.glMakeImageHandleResidentARB(_handle, _access)
-}*/
-/*func MakeImageHandleNonResidentARB(handle ???){
-	panic()
+}*///(blacklisted)
+/*func MakeImageHandleNonResidentARB(handle *uint64){
+	_handle := (*C.GLuint64)(unsafe.Pointer(handle))
 	C.glMakeImageHandleNonResidentARB(_handle)
-}*/
-/*func UniformHandleui64ARB(location int, value ???){
+}*///(blacklisted)
+/*func UniformHandleui64ARB(location int32, value *uint64){
 	_location := C.GLint(location)
-	panic()
+	_value := (*C.GLuint64)(unsafe.Pointer(value))
 	C.glUniformHandleui64ARB(_location, _value)
-}*/
-/*func UniformHandleui64vARB(location int, count int, value ???){
+}*///(blacklisted)
+/*func UniformHandleui64vARB(location int32, count int32, value ???){
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
 	panic()
 	C.glUniformHandleui64vARB(_location, _count, _value)
 }*/
-/*func ProgramUniformHandleui64ARB(program uint, location int, value ???){
+/*func ProgramUniformHandleui64ARB(program uint32, location int32, value *uint64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
-	panic()
+	_value := (*C.GLuint64)(unsafe.Pointer(value))
 	C.glProgramUniformHandleui64ARB(_program, _location, _value)
-}*/
-/*func ProgramUniformHandleui64vARB(program uint, location int, count int, values ???){
+}*///(blacklisted)
+/*func ProgramUniformHandleui64vARB(program uint32, location int32, count int32, values ???){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_count := C.GLsizei(count)
 	panic()
 	C.glProgramUniformHandleui64vARB(_program, _location, _count, _values)
 }*/
-/*func IsTextureHandleResidentARB(handle ???)bool{
-	panic()
+/*func IsTextureHandleResidentARB(handle *uint64)bool{
+	_handle := (*C.GLuint64)(unsafe.Pointer(handle))
 	returnvalue := C.glIsTextureHandleResidentARB(_handle)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-/*func IsImageHandleResidentARB(handle ???)bool{
-	panic()
+}*///(blacklisted)
+/*func IsImageHandleResidentARB(handle *uint64)bool{
+	_handle := (*C.GLuint64)(unsafe.Pointer(handle))
 	returnvalue := C.glIsImageHandleResidentARB(_handle)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-/*func VertexAttribL1ui64ARB(index uint, x ???){
+}*///(blacklisted)
+/*func VertexAttribL1ui64ARB(index uint32, x ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttribL1ui64ARB(_index, _x)
 }*/
-/*func VertexAttribL1ui64vARB(index uint, v ???){
+/*func VertexAttribL1ui64vARB(index uint32, v ???){
 	_index := C.GLuint(index)
 	panic()
 	C.glVertexAttribL1ui64vARB(_index, _v)
 }*/
-/*func GetVertexAttribLui64vARB(index uint, pname int, params ???){
+/*func GetVertexAttribLui64vARB(index uint32, pname int32, params ???){
 	_index := C.GLuint(index)
 	_pname := C.GLenum(pname)
 	panic()
 	C.glGetVertexAttribLui64vARB(_index, _pname, _params)
 }*/
-/*func CreateSyncFromCLeventARB(context ???, event ???, flags uint)???{
+/*func CreateSyncFromCLeventARB(context ???, event ???, flags uint32)???{
 	panic()
 	panic()
 	_flags := C.GLbitfield(flags)
@@ -5174,7 +5175,7 @@ return convreturnvalue
 	panic()
 return convreturnvalue
 }*/
-/*func DispatchComputeGroupSizeARB(num_groups_x uint, num_groups_y uint, num_groups_z uint, group_size_x uint, group_size_y uint, group_size_z uint){
+/*func DispatchComputeGroupSizeARB(num_groups_x uint32, num_groups_y uint32, num_groups_z uint32, group_size_x uint32, group_size_y uint32, group_size_z uint32){
 	_num_groups_x := C.GLuint(num_groups_x)
 	_num_groups_y := C.GLuint(num_groups_y)
 	_num_groups_z := C.GLuint(num_groups_z)
@@ -5182,61 +5183,61 @@ return convreturnvalue
 	_group_size_y := C.GLuint(group_size_y)
 	_group_size_z := C.GLuint(group_size_z)
 	C.glDispatchComputeGroupSizeARB(_num_groups_x, _num_groups_y, _num_groups_z, _group_size_x, _group_size_y, _group_size_z)
-}*/
-/*func DebugMessageControlARB(source int, whichtype int, severity int, count int, ids ???, enabled bool){
+}*///(blacklisted)
+func DebugMessageControlARB(source int32, whichtype int32, severity int32, count int32, ids *uint32, enabled bool){
 	_source := C.GLenum(source)
 	_whichtype := C.GLenum(whichtype)
 	_severity := C.GLenum(severity)
 	_count := C.GLsizei(count)
-	panic()
-	_enabled := C.GLboolean(1);if !enabled{_enabled=C.GLboolean(0)}
+	_ids := (*C.GLuint)(unsafe.Pointer(ids))
+	_enabled := C.GLboolean(TRUE);if !enabled{_enabled=C.GLboolean(FALSE)}
 	C.glDebugMessageControlARB(_source, _whichtype, _severity, _count, _ids, _enabled)
-}*/
-/*func DebugMessageInsertARB(source int, whichtype int, id uint, severity int, length int, buf ???){
+}
+func DebugMessageInsertARB(source int32, whichtype int32, id uint32, severity int32, length int32, buf *byte){
 	_source := C.GLenum(source)
 	_whichtype := C.GLenum(whichtype)
 	_id := C.GLuint(id)
 	_severity := C.GLenum(severity)
 	_length := C.GLsizei(length)
-	panic()
+	_buf := (*C.GLchar)(unsafe.Pointer(buf))
 	C.glDebugMessageInsertARB(_source, _whichtype, _id, _severity, _length, _buf)
-}*/
-/*func DebugMessageCallbackARB(callback ???, userParam ???){
+}
+/*func DebugMessageCallbackARB(callback ???, userParam uintptr){
 	panic()
-	panic()
+	_userParam := unsafe.Pointer(userParam)
 	C.glDebugMessageCallbackARB(_callback, _userParam)
 }*/
-/*func GetDebugMessageLogARB(count uint, bufSize int, sources ???, types ???, ids ???, severities ???, lengths int, messageLog int)uint{
+/*func GetDebugMessageLogARB(count uint32, bufSize int32, sources ???, types ???, ids *uint32, severities ???, lengths *int32, messageLog *byte)uint32{
 	_count := C.GLuint(count)
 	_bufSize := C.GLsizei(bufSize)
 	panic()
 	panic()
+	_ids := (*C.GLuint)(unsafe.Pointer(ids))
 	panic()
-	panic()
-	_lengths := C.GLsizei(lengths)
-	panic()
+	_lengths := (*C.GLsizei)(unsafe.Pointer(lengths))
+	_messageLog := (*C.GLchar)(unsafe.Pointer(messageLog))
 	returnvalue := C.glGetDebugMessageLogARB(_count, _bufSize, _sources, _types, _ids, _severities, _lengths, _messageLog)
-	panic()
+	convreturnvalue := uint32(returnvalue)
 return convreturnvalue
 }*/
-func BlendEquationiARB(buf uint, mode int){
+func BlendEquationiARB(buf uint32, mode int32){
 	_buf := C.GLuint(buf)
 	_mode := C.GLenum(mode)
 	C.glBlendEquationiARB(_buf, _mode)
 }
-func BlendEquationSeparateiARB(buf uint, modeRGB int, modeAlpha int){
+func BlendEquationSeparateiARB(buf uint32, modeRGB int32, modeAlpha int32){
 	_buf := C.GLuint(buf)
 	_modeRGB := C.GLenum(modeRGB)
 	_modeAlpha := C.GLenum(modeAlpha)
 	C.glBlendEquationSeparateiARB(_buf, _modeRGB, _modeAlpha)
 }
-func BlendFunciARB(buf uint, src int, dst int){
+func BlendFunciARB(buf uint32, src int32, dst int32){
 	_buf := C.GLuint(buf)
 	_src := C.GLenum(src)
 	_dst := C.GLenum(dst)
 	C.glBlendFunciARB(_buf, _src, _dst)
 }
-func BlendFuncSeparateiARB(buf uint, srcRGB int, dstRGB int, srcAlpha int, dstAlpha int){
+func BlendFuncSeparateiARB(buf uint32, srcRGB int32, dstRGB int32, srcAlpha int32, dstAlpha int32){
 	_buf := C.GLuint(buf)
 	_srcRGB := C.GLenum(srcRGB)
 	_dstRGB := C.GLenum(dstRGB)
@@ -5244,29 +5245,29 @@ func BlendFuncSeparateiARB(buf uint, srcRGB int, dstRGB int, srcAlpha int, dstAl
 	_dstAlpha := C.GLenum(dstAlpha)
 	C.glBlendFuncSeparateiARB(_buf, _srcRGB, _dstRGB, _srcAlpha, _dstAlpha)
 }
-/*func MultiDrawArraysIndirectCountARB(mode int, indirect ???, drawcount ???, maxdrawcount int, stride int){
+/*func MultiDrawArraysIndirectCountARB(mode int32, indirect uintptr, drawcount uintptr, maxdrawcount int32, stride int32){
 	_mode := C.GLenum(mode)
-	panic()
-	panic()
+	_indirect :=C.GLintptr(indirect)
+	_drawcount :=C.GLintptr(drawcount)
 	_maxdrawcount := C.GLsizei(maxdrawcount)
 	_stride := C.GLsizei(stride)
 	C.glMultiDrawArraysIndirectCountARB(_mode, _indirect, _drawcount, _maxdrawcount, _stride)
-}*/
-/*func MultiDrawElementsIndirectCountARB(mode int, whichtype int, indirect ???, drawcount ???, maxdrawcount int, stride int){
+}*///(blacklisted)
+/*func MultiDrawElementsIndirectCountARB(mode int32, whichtype int32, indirect uintptr, drawcount uintptr, maxdrawcount int32, stride int32){
 	_mode := C.GLenum(mode)
 	_whichtype := C.GLenum(whichtype)
-	panic()
-	panic()
+	_indirect :=C.GLintptr(indirect)
+	_drawcount :=C.GLintptr(drawcount)
 	_maxdrawcount := C.GLsizei(maxdrawcount)
 	_stride := C.GLsizei(stride)
 	C.glMultiDrawElementsIndirectCountARB(_mode, _whichtype, _indirect, _drawcount, _maxdrawcount, _stride)
-}*/
-func GetGraphicsResetStatusARB()int{
+}*///(blacklisted)
+func GetGraphicsResetStatusARB()int32{
 	returnvalue := C.glGetGraphicsResetStatusARB()
-	convreturnvalue := int(returnvalue)
+	convreturnvalue := int32(returnvalue)
 return convreturnvalue
 }
-/*func GetnTexImageARB(target int, level int, format int, whichtype int, bufSize int, img ???){
+/*func GetnTexImageARB(target int32, level int32, format int32, whichtype int32, bufSize int32, img ???){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_format := C.GLenum(format)
@@ -5275,7 +5276,7 @@ return convreturnvalue
 	panic()
 	C.glGetnTexImageARB(_target, _level, _format, _whichtype, _bufSize, _img)
 }*/
-/*func ReadnPixelsARB(x int, y int, width int, height int, format int, whichtype int, bufSize int, data ???){
+/*func ReadnPixelsARB(x int32, y int32, width int32, height int32, format int32, whichtype int32, bufSize int32, data ???){
 	_x := C.GLint(x)
 	_y := C.GLint(y)
 	_width := C.GLsizei(width)
@@ -5286,88 +5287,88 @@ return convreturnvalue
 	panic()
 	C.glReadnPixelsARB(_x, _y, _width, _height, _format, _whichtype, _bufSize, _data)
 }*/
-/*func GetnCompressedTexImageARB(target int, lod int, bufSize int, img ???){
+/*func GetnCompressedTexImageARB(target int32, lod int32, bufSize int32, img ???){
 	_target := C.GLenum(target)
 	_lod := C.GLint(lod)
 	_bufSize := C.GLsizei(bufSize)
 	panic()
 	C.glGetnCompressedTexImageARB(_target, _lod, _bufSize, _img)
 }*/
-/*func GetnUniformfvARB(program uint, location int, bufSize int, params ???){
+func GetnUniformfvARB(program uint32, location int32, bufSize int32, params *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_bufSize := C.GLsizei(bufSize)
-	panic()
+	_params := (*C.GLfloat)(unsafe.Pointer(params))
 	C.glGetnUniformfvARB(_program, _location, _bufSize, _params)
-}*/
-/*func GetnUniformivARB(program uint, location int, bufSize int, params ???){
+}
+func GetnUniformivARB(program uint32, location int32, bufSize int32, params *int32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_bufSize := C.GLsizei(bufSize)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetnUniformivARB(_program, _location, _bufSize, _params)
-}*/
-/*func GetnUniformuivARB(program uint, location int, bufSize int, params ???){
+}
+func GetnUniformuivARB(program uint32, location int32, bufSize int32, params *uint32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_bufSize := C.GLsizei(bufSize)
-	panic()
+	_params := (*C.GLuint)(unsafe.Pointer(params))
 	C.glGetnUniformuivARB(_program, _location, _bufSize, _params)
-}*/
-/*func GetnUniformdvARB(program uint, location int, bufSize int, params ???){
+}
+func GetnUniformdvARB(program uint32, location int32, bufSize int32, params *float64){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
 	_bufSize := C.GLsizei(bufSize)
-	panic()
+	_params := (*C.GLdouble)(unsafe.Pointer(params))
 	C.glGetnUniformdvARB(_program, _location, _bufSize, _params)
-}*/
+}
 func MinSampleShadingARB(value float32){
 	_value := C.GLfloat(value)
 	C.glMinSampleShadingARB(_value)
 }
-/*func NamedStringARB(whichtype int, namelen int, name ???, stringlen int, string ???){
+/*func NamedStringARB(whichtype int32, namelen int32, name *byte, stringlen int32, whatstring *byte){
 	_whichtype := C.GLenum(whichtype)
 	_namelen := C.GLint(namelen)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	_stringlen := C.GLint(stringlen)
-	panic()
-	C.glNamedStringARB(_whichtype, _namelen, _name, _stringlen, _string)
-}*/
-/*func DeleteNamedStringARB(namelen int, name ???){
+	_whatstring := (*C.GLchar)(unsafe.Pointer(whatstring))
+	C.glNamedStringARB(_whichtype, _namelen, _name, _stringlen, _whatstring)
+}*///(blacklisted)
+/*func DeleteNamedStringARB(namelen int32, name *byte){
 	_namelen := C.GLint(namelen)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	C.glDeleteNamedStringARB(_namelen, _name)
-}*/
-/*func CompileShaderIncludeARB(shader uint, count int, path ???, length ???){
+}*///(blacklisted)
+/*func CompileShaderIncludeARB(shader uint32, count int32, path **byte, length *int32){
 	_shader := C.GLuint(shader)
 	_count := C.GLsizei(count)
-	panic()
-	panic()
+	_path := (**C.GLchar)(unsafe.Pointer(path))
+	_length := (*C.GLint)(unsafe.Pointer(length))
 	C.glCompileShaderIncludeARB(_shader, _count, _path, _length)
-}*/
-/*func IsNamedStringARB(namelen int, name ???)bool{
+}*///(blacklisted)
+/*func IsNamedStringARB(namelen int32, name *byte)bool{
 	_namelen := C.GLint(namelen)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	returnvalue := C.glIsNamedStringARB(_namelen, _name)
-	panic()
+	convreturnvalue := false;if returnvalue==TRUE{convreturnvalue=true}
 return convreturnvalue
-}*/
-/*func GetNamedStringARB(namelen int, name ???, bufSize int, stringlen ???, string int){
+}*///(blacklisted)
+/*func GetNamedStringARB(namelen int32, name *byte, bufSize int32, stringlen *int32, whatstring *byte){
 	_namelen := C.GLint(namelen)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	_bufSize := C.GLsizei(bufSize)
-	panic()
-	panic()
-	C.glGetNamedStringARB(_namelen, _name, _bufSize, _stringlen, _string)
-}*/
-/*func GetNamedStringivARB(namelen int, name ???, pname int, params ???){
+	_stringlen := (*C.GLint)(unsafe.Pointer(stringlen))
+	_whatstring := (*C.GLchar)(unsafe.Pointer(whatstring))
+	C.glGetNamedStringARB(_namelen, _name, _bufSize, _stringlen, _whatstring)
+}*///(blacklisted)
+/*func GetNamedStringivARB(namelen int32, name *byte, pname int32, params *int32){
 	_namelen := C.GLint(namelen)
-	panic()
+	_name := (*C.GLchar)(unsafe.Pointer(name))
 	_pname := C.GLenum(pname)
-	panic()
+	_params := (*C.GLint)(unsafe.Pointer(params))
 	C.glGetNamedStringivARB(_namelen, _name, _pname, _params)
-}*/
-/*func TexPageCommitmentARB(target int, level int, xoffset int, yoffset int, zoffset int, width int, height int, depth int, resident bool){
+}*///(blacklisted)
+/*func TexPageCommitmentARB(target int32, level int32, xoffset int32, yoffset int32, zoffset int32, width int32, height int32, depth int32, resident bool){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_xoffset := C.GLint(xoffset)
@@ -5376,8 +5377,9 @@ return convreturnvalue
 	_width := C.GLsizei(width)
 	_height := C.GLsizei(height)
 	_depth := C.GLsizei(depth)
-	_resident := C.GLboolean(1);if !resident{_resident=C.GLboolean(0)}
+	_resident := C.GLboolean(TRUE);if !resident{_resident=C.GLboolean(FALSE)}
 	C.glTexPageCommitmentARB(_target, _level, _xoffset, _yoffset, _zoffset, _width, _height, _depth, _resident)
-}*/
-//failed:  376
-//succeeded:  211
+}*///(blacklisted)
+//failed:  65
+//succeeded:  497
+//blacklisted:  25
