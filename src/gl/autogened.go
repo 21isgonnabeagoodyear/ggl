@@ -1704,16 +1704,16 @@ func ReadBuffer(mode int32){
 	_mode := C.GLenum(mode)
 	C.glReadBuffer(_mode)
 }
-/*func ReadPixels(x int32, y int32, width int32, height int32, format int32, whichtype int32, pixels ???){
+func ReadPixels(x int32, y int32, width int32, height int32, format int32, whichtype int32, pixels *byte){
 	_x := C.GLint(x)
 	_y := C.GLint(y)
 	_width := C.GLsizei(width)
 	_height := C.GLsizei(height)
 	_format := C.GLenum(format)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_pixels := unsafe.Pointer(pixels)
 	C.glReadPixels(_x, _y, _width, _height, _format, _whichtype, _pixels)
-}*/
+}
 /*func GetBooleanv(pname int32, data ???){
 	_pname := C.GLenum(pname)
 	panic()
@@ -1745,14 +1745,14 @@ func GetIntegerv(pname int32, data *int32){
 	panic()
 return convreturnvalue
 }*/
-/*func GetTexImage(target int32, level int32, format int32, whichtype int32, pixels ???){
+func GetTexImage(target int32, level int32, format int32, whichtype int32, pixels *byte){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_format := C.GLenum(format)
 	_whichtype := C.GLenum(whichtype)
-	panic()
+	_pixels := unsafe.Pointer(pixels)
 	C.glGetTexImage(_target, _level, _format, _whichtype, _pixels)
-}*/
+}
 func GetTexParameterfv(target int32, pname int32, params *float32){
 	_target := C.GLenum(target)
 	_pname := C.GLenum(pname)
@@ -2030,12 +2030,12 @@ func CompressedTexSubImage1D(target int32, level int32, xoffset int32, width int
 	_data := unsafe.Pointer(data)
 	C.glCompressedTexSubImage1D(_target, _level, _xoffset, _width, _format, _imageSize, _data)
 }
-/*func GetCompressedTexImage(target int32, level int32, img ???){
+func GetCompressedTexImage(target int32, level int32, img *byte){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
-	panic()
+	_img := unsafe.Pointer(img)
 	C.glGetCompressedTexImage(_target, _level, _img)
-}*/
+}
 func BlendFuncSeparate(sfactorRGB int32, dfactorRGB int32, sfactorAlpha int32, dfactorAlpha int32){
 	_sfactorRGB := C.GLenum(sfactorRGB)
 	_dfactorRGB := C.GLenum(dfactorRGB)
@@ -2167,13 +2167,13 @@ func BufferSubData(target int32, offset uintptr, size int32, data uintptr){
 	_data := unsafe.Pointer(data)
 	C.glBufferSubData(_target, _offset, _size, _data)
 }
-/*func GetBufferSubData(target int32, offset uintptr, size int32, data ???){
+func GetBufferSubData(target int32, offset uintptr, size int32, data *byte){
 	_target := C.GLenum(target)
 	_offset :=C.GLintptr(offset)
 	_size := C.GLsizeiptr(size)
-	panic()
+	_data := unsafe.Pointer(data)
 	C.glGetBufferSubData(_target, _offset, _size, _data)
-}*/
+}
 /*func MapBuffer(target int32, access int32)???{
 	_target := C.GLenum(target)
 	_access := C.GLenum(access)
@@ -4005,12 +4005,12 @@ func ClearDepthf(d float32){
 	_d := C.GLfloat(d)
 	C.glClearDepthf(_d)
 }
-/*func GetProgramBinary(program uint32, bufSize int32, length *int32, binaryFormat ???, binary ???){
+/*func GetProgramBinary(program uint32, bufSize int32, length *int32, binaryFormat ???, binary *byte){
 	_program := C.GLuint(program)
 	_bufSize := C.GLsizei(bufSize)
 	_length := (*C.GLsizei)(unsafe.Pointer(length))
 	panic()
-	panic()
+	_binary := unsafe.Pointer(binary)
 	C.glGetProgramBinary(_program, _bufSize, _length, _binaryFormat, _binary)
 }*/
 func ProgramBinary(program uint32, binaryFormat int32, binary uintptr, length int32){
@@ -5267,16 +5267,16 @@ func GetGraphicsResetStatusARB()int32{
 	convreturnvalue := int32(returnvalue)
 return convreturnvalue
 }
-/*func GetnTexImageARB(target int32, level int32, format int32, whichtype int32, bufSize int32, img ???){
+func GetnTexImageARB(target int32, level int32, format int32, whichtype int32, bufSize int32, img *byte){
 	_target := C.GLenum(target)
 	_level := C.GLint(level)
 	_format := C.GLenum(format)
 	_whichtype := C.GLenum(whichtype)
 	_bufSize := C.GLsizei(bufSize)
-	panic()
+	_img := unsafe.Pointer(img)
 	C.glGetnTexImageARB(_target, _level, _format, _whichtype, _bufSize, _img)
-}*/
-/*func ReadnPixelsARB(x int32, y int32, width int32, height int32, format int32, whichtype int32, bufSize int32, data ???){
+}
+func ReadnPixelsARB(x int32, y int32, width int32, height int32, format int32, whichtype int32, bufSize int32, data *byte){
 	_x := C.GLint(x)
 	_y := C.GLint(y)
 	_width := C.GLsizei(width)
@@ -5284,16 +5284,16 @@ return convreturnvalue
 	_format := C.GLenum(format)
 	_whichtype := C.GLenum(whichtype)
 	_bufSize := C.GLsizei(bufSize)
-	panic()
+	_data := unsafe.Pointer(data)
 	C.glReadnPixelsARB(_x, _y, _width, _height, _format, _whichtype, _bufSize, _data)
-}*/
-/*func GetnCompressedTexImageARB(target int32, lod int32, bufSize int32, img ???){
+}
+func GetnCompressedTexImageARB(target int32, lod int32, bufSize int32, img *byte){
 	_target := C.GLenum(target)
 	_lod := C.GLint(lod)
 	_bufSize := C.GLsizei(bufSize)
-	panic()
+	_img := unsafe.Pointer(img)
 	C.glGetnCompressedTexImageARB(_target, _lod, _bufSize, _img)
-}*/
+}
 func GetnUniformfvARB(program uint32, location int32, bufSize int32, params *float32){
 	_program := C.GLuint(program)
 	_location := C.GLint(location)
@@ -5380,6 +5380,6 @@ return convreturnvalue
 	_resident := C.GLboolean(TRUE);if !resident{_resident=C.GLboolean(FALSE)}
 	C.glTexPageCommitmentARB(_target, _level, _xoffset, _yoffset, _zoffset, _width, _height, _depth, _resident)
 }*///(blacklisted)
-//failed:  65
-//succeeded:  497
+//failed:  58
+//succeeded:  504
 //blacklisted:  25

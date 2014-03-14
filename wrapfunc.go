@@ -120,7 +120,7 @@ typemap["const GLdouble *"] =         [3]string{"*float64", "\t$o := (*C.GLdoubl
 typemap["GLfloat *"] =                [3]string{"*float32", "\t$o := (*C.GLfloat)(unsafe.Pointer($i))", "\tpanic()"}
 typemap["GLint *"] =                  [3]string{"*int32", "\t$o := (*C.GLint)(unsafe.Pointer($i))", "\tpanic()"}
 typemap["const_GLubyte_*"] =          [3]string{"???", "\tpanic()", "\tpanic()"}
-typemap["void *"] =                   [3]string{"???", "\tpanic()", "\tpanic()"}
+typemap["void *"] =                   [3]string{"*byte", "\t$o := unsafe.Pointer($i)", "\tpanic()"}
 typemap["void*"] =                    [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["const GLsizei *"] =          [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["GLsizei *"] =                [3]string{"*int32", "\t$o := (*C.GLsizei)(unsafe.Pointer($i))", "\tpanic()"}
@@ -152,6 +152,7 @@ typemap["GLubyte"] =                  [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["const GLbyte *"] =           [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["const GLubyte *"] =          [3]string{"???", "\tpanic()", "\tpanic()"}
 typemap["const GLsizeiptr *"] =       [3]string{"???", "\tpanic()", "\tpanic()"}
+
 
 
 

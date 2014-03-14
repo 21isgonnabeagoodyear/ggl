@@ -1,6 +1,7 @@
 package main
 import "gl"
 import "time"
+import "fmt"
 
 var vshadsource = []byte(`
 #version 330
@@ -21,11 +22,21 @@ var fshadsource = []byte(`
 #version 330
 out vec4 col;
 void main(){
-	//col = vec4(int(gl_FragCoord.x)&int(gl_FragCoord.y));
+	//col = vec4(int(gl_FragCoord.x/4)&int(gl_FragCoord.y/4));
 	col = vec4(0,0,1,1);
-	col.a = float(int(gl_FragCoord.x)&int(gl_FragCoord.y));
+	col.a = float(int(gl_FragCoord.x/4)&int(gl_FragCoord.y/4));
 }
 `)
+
+func printshaderinfolog(shaderid uint32){
+	var status int32
+	gl.GetShaderiv(shaderid, gl.COMPILE_STATUS, &status)
+	if status != gl.TRUE{
+		var log [1000]byte
+		gl.GetShaderInfoLog(shaderid, 1000, nil, &log[0])
+		fmt.Println(string(log[:]))
+	}
+}
 
 func main(){
 	gl.InitGL(800,600, 1)
@@ -44,6 +55,7 @@ func main(){
 	length = int32(len(vshadsource))
 	gl.ShaderSource(vertshad, 1, &ptrtobyte, &length)
 	gl.CompileShader(vertshad)
+	printshaderinfolog(vertshad)
 	gl.AttachShader(prog, vertshad)
 
 	fragshad := gl.CreateShader(gl.FRAGMENT_SHADER)
@@ -51,9 +63,14 @@ func main(){
 	length = int32(len(vshadsource))
 	gl.ShaderSource(fragshad, 1, &ptrtobyte, &length)
 	gl.CompileShader(fragshad)
+	printshaderinfolog(fragshad)
 	gl.AttachShader(prog, fragshad)
 
 	gl.LinkProgram(prog)
+	var log [1000]byte
+	gl.GetProgramInfoLog(prog, 1000, nil, &log[0])
+	fmt.Println(string(log[:]))
+
 	gl.UseProgram(prog)
 
 	gl.DrawArrays(gl.TRIANGLE_FAN, 0, 4)

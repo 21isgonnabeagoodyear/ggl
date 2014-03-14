@@ -9,6 +9,7 @@ import "C"
 import "errors"
 import "fmt"
 import "runtime"
+import "unsafe"
 
 func printerr( text string) error{
 	_,file,line,_ := runtime.Caller(1)
@@ -33,24 +34,31 @@ func Printerr( text string) error{
 
 var win *[0]byte
 
-func InitGL(width, height, msaa int){
+func InitGL(width, height, msaa int, fullscreen bool){
 	C.SDL_Init(C.SDL_INIT_VIDEO)
         C.SDL_VideoInit(/*nil*/C.SDL_GetVideoDriver(0))
 	C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_MAJOR_VERSION, 3)
 	C.SDL_GL_SetAttribute(C.SDL_GL_CONTEXT_MINOR_VERSION, 2)
 
-	C.SDL_GL_SetAttribute(C.SDL_GL_MULTISAMPLEBUFFERS, 1)
-        C.SDL_GL_SetAttribute(C.SDL_GL_MULTISAMPLESAMPLES, C.int(msaa))
+	if msaa != 0{
+		C.SDL_GL_SetAttribute(C.SDL_GL_MULTISAMPLEBUFFERS, 1)
+		C.SDL_GL_SetAttribute(C.SDL_GL_MULTISAMPLESAMPLES, C.int(msaa))
+	}
 
 C.SDL_GL_SetAttribute( C.SDL_GL_DEPTH_SIZE, 16 );
-	win = C.SDL_CreateWindow(nil, C.SDL_WINDOWPOS_CENTERED, C.SDL_WINDOWPOS_CENTERED,C.int(width), C.int(height), C.SDL_WINDOW_OPENGL)
+	//win = C.SDL_CreateWindow(nil, C.SDL_WINDOWPOS_CENTERED, C.SDL_WINDOWPOS_CENTERED,C.int(width), C.int(height), C.SDL_WINDOW_OPENGL)
+	if fullscreen{
+		win = C.SDL_CreateWindow(nil, C.SDL_WINDOWPOS_CENTERED, C.SDL_WINDOWPOS_CENTERED,C.int(width), C.int(height), C.SDL_WINDOW_OPENGL|C.SDL_WINDOW_FULLSCREEN_DESKTOP)
+	}else{
+		win = C.SDL_CreateWindow(nil, C.SDL_WINDOWPOS_CENTERED, C.SDL_WINDOWPOS_CENTERED,C.int(width), C.int(height), C.SDL_WINDOW_OPENGL)
+	}
 
 	C.SDL_ShowWindow(win)
 	wat := C.SDL_GL_CreateContext(win)
 	fmt.Println(C.GoString(C.SDL_GetVideoDriver(0)))
 
 	C.SDL_GL_MakeCurrent(win, wat)
-	C.SDL_GL_SetSwapInterval(1)
+	//C.SDL_GL_SetSwapInterval(1)
 
 	C.glEnable(C.GL_DEPTH_TEST);
 	C.glDepthFunc(C.GL_LEQUAL)
@@ -60,9 +68,101 @@ C.SDL_GL_SetAttribute( C.SDL_GL_DEPTH_SIZE, 16 );
 	printerr("failed to initialize openGL")
 
 }
+func Vsync(enable bool){
+	if enable{
+		C.SDL_GL_SetSwapInterval(1)
+	}else{
+		C.SDL_GL_SetSwapInterval(0)
+	}
+}
 func Flip(){
 	C.SDL_GL_SwapWindow(win)
 }
 func Q(){
         C.SDL_Quit()
+}
+func str2scancode(in string) int{
+	if len(in) ==1{
+		if in[0] >= 'a' && in[0] <= 'z'{
+			return int(in[0])-'a'+C.SDL_SCANCODE_A
+		}
+		if in[0] >= '0' && in[0] <= '9'{
+			return int(in[0])-'0'+C.SDL_SCANCODE_0
+		}
+	}
+	if in == "rarrow"{return C.SDL_SCANCODE_RIGHT}
+	if in == "larrow"{return C.SDL_SCANCODE_LEFT}
+	if in == "uarrow"{return C.SDL_SCANCODE_UP}
+	if in == "darrow"{return C.SDL_SCANCODE_DOWN}
+	if in == "esc"{return C.SDL_SCANCODE_ESCAPE}
+	if in == "ctrl"{return C.SDL_SCANCODE_LCTRL}
+	if in == " "{return C.SDL_SCANCODE_SPACE}
+
+
+	return 0
+
+}
+
+var joy *C.SDL_Joystick
+func makestickopened(){
+	if joy == nil{
+		C.SDL_InitSubSystem(C.SDL_INIT_JOYSTICK)
+		fmt.Println(int(C.SDL_NumJoysticks()))
+		joy = C.SDL_JoystickOpen(0)
+		fmt.Println(joy)
+	}
+}
+
+func Keystate(key string) int{
+	if key == "joy1stick1x"{
+		makestickopened()
+		return int(C.SDL_JoystickGetAxis(joy, 0))
+	}
+	if key == "joy1stick1y"{
+		makestickopened()
+		return int(C.SDL_JoystickGetAxis(joy, 1))
+	}
+	if key == "joy1stick2x"{
+		makestickopened()
+		return int(C.SDL_JoystickGetAxis(joy, 3))
+	}
+	if key == "joy1stick2y"{
+		makestickopened()
+		return int(C.SDL_JoystickGetAxis(joy, 4))
+	}
+	if key == "joy1a"{
+		makestickopened()
+		return int(C.SDL_JoystickGetButton(joy, 0))
+	}
+	var length C.int
+	keys := C.SDL_GetKeyboardState(&length)
+	return int(*(*byte)(unsafe.Pointer(uintptr(unsafe.Pointer(keys))+uintptr(str2scancode(key)))))//letter scancodes start at 4
+
+}
+func Updatekeys(){
+	C.SDL_PumpEvents()
+}
+func Mouse() (int, int, uint32){
+	var x C.int
+	var y C.int
+	state := C.SDL_GetMouseState(&x,&y)
+	return int(x),int(y),uint32(state)
+}
+func Mouserelative() (int, int, uint32){
+	var x C.int
+	var y C.int
+	state := C.SDL_GetRelativeMouseState(&x,&y)
+	C.SDL_SetRelativeMouseMode(C.SDL_TRUE)
+	return int(x),int(y),uint32(state)
+/*
+	state := C.SDL_GetMouseState(&x,&y)
+	C.SDL_WarpMouseInWindow(win, 100,100)
+	return int(x)-100,int(y)-100,uint32(state)
+*/
+}
+
+func GetWindowSize() (int, int){
+	var w, h C.int
+	C.SDL_GetWindowSize(win, &w, &h)
+	return int(w), int(h)
 }
