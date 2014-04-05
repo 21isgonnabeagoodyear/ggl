@@ -96,6 +96,7 @@ func str2scancode(in string) int{
 	if in == "darrow"{return C.SDL_SCANCODE_DOWN}
 	if in == "esc"{return C.SDL_SCANCODE_ESCAPE}
 	if in == "ctrl"{return C.SDL_SCANCODE_LCTRL}
+	if in == "shift"{return C.SDL_SCANCODE_LSHIFT}
 	if in == " "{return C.SDL_SCANCODE_SPACE}
 
 
