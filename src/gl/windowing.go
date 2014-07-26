@@ -170,9 +170,9 @@ func TrapMouse(trap bool){
 }
 func ShowCursor(show bool){
 	if show{
-		SDL_ShowCursor(C.SDL_TRUE)
+		C.SDL_ShowCursor(C.SDL_TRUE)
 	}else{
-		SDL_ShowCursor(C.SDL_FALSE)
+		C.SDL_ShowCursor(C.SDL_FALSE)
 	}
 }
 
