@@ -98,6 +98,18 @@ func str2scancode(in string) int{
 	if in == "ctrl"{return C.SDL_SCANCODE_LCTRL}
 	if in == "shift"{return C.SDL_SCANCODE_LSHIFT}
 	if in == " "{return C.SDL_SCANCODE_SPACE}
+	if in == "f1"{return C.SDL_SCANCODE_F1}
+	if in == "f2"{return C.SDL_SCANCODE_F2}
+	if in == "f3"{return C.SDL_SCANCODE_F3}
+	if in == "f4"{return C.SDL_SCANCODE_F4}
+	if in == "f5"{return C.SDL_SCANCODE_F5}
+	if in == "f6"{return C.SDL_SCANCODE_F6}
+	if in == "f7"{return C.SDL_SCANCODE_F7}
+	if in == "f8"{return C.SDL_SCANCODE_F8}
+	if in == "f9"{return C.SDL_SCANCODE_F9}
+	if in == "f10"{return C.SDL_SCANCODE_F10}
+	if in == "f11"{return C.SDL_SCANCODE_F11}
+	if in == "f12"{return C.SDL_SCANCODE_F12}
 
 
 	return 0
@@ -160,6 +172,13 @@ func Mouserelative() (int, int, uint32){
 	C.SDL_WarpMouseInWindow(win, 100,100)
 	return int(x)-100,int(y)-100,uint32(state)
 */
+}
+func Fullscreen(fs bool){
+	if fs{
+		C.SDL_SetWindowFullscreen(win, C.SDL_WINDOW_FULLSCREEN_DESKTOP)
+	}else{
+		C.SDL_SetWindowFullscreen(win, 0)
+	}
 }
 func TrapMouse(trap bool){
 	if trap{
