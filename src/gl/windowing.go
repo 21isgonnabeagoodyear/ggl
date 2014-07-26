@@ -168,6 +168,13 @@ func TrapMouse(trap bool){
 		C.SDL_SetWindowGrab(win, C.SDL_FALSE)
 	}
 }
+func ShowCursor(show bool){
+	if show{
+		SDL_ShowCursor(C.SDL_TRUE)
+	}else{
+		SDL_ShowCursor(C.SDL_FALSE)
+	}
+}
 
 func GetWindowSize() (int, int){
 	var w, h C.int
