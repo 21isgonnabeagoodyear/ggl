@@ -163,9 +163,9 @@ func Mouserelative() (int, int, uint32){
 }
 func TrapMouse(trap bool){
 	if trap{
-		C.SDL_WM_GrabInput(C.SDL_GRAB_ON)
+		C.SDL_SetWindowGrab(win, C.SDL_TRUE)
 	}else{
-		C.SDL_WM_GrabInput(C.SDL_GRAB_OFF)
+		C.SDL_SetWindowGrab(win, C.SDL_FALSE)
 	}
 }
 
