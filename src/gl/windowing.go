@@ -161,6 +161,13 @@ func Mouserelative() (int, int, uint32){
 	return int(x)-100,int(y)-100,uint32(state)
 */
 }
+func TrapMouse(trap bool){
+	if trap{
+		C.SDL_WM_GrabInput(C.SDL_GRAB_ON)
+	}else{
+		C.SDL_WM_GrabInput(C.SDL_GRAB_OFF)
+	}
+}
 
 func GetWindowSize() (int, int){
 	var w, h C.int
