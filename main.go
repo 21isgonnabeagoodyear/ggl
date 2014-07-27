@@ -39,7 +39,7 @@ func printshaderinfolog(shaderid uint32){
 }
 
 func main(){
-	gl.InitGL(800,600, 1)
+	gl.InitGL(800,600, 1, false)
 	gl.ClearColor(1,0.5,0,1)
 	gl.Clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT)
 	gl.Enable(gl.BLEND)
