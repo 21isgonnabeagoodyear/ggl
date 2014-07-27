@@ -180,6 +180,9 @@ func Fullscreen(fs bool){
 		C.SDL_SetWindowFullscreen(win, 0)
 	}
 }
+func Isfocussed() bool{
+	return C.SDL_GetWindowFlags(win)&C.SDL_WINDOW_INPUT_FOCUS != 0
+}
 func TrapMouse(trap bool){
 	if trap{
 		C.SDL_SetWindowGrab(win, C.SDL_TRUE)
