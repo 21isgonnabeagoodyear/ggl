@@ -32,7 +32,7 @@ func Printerr( text string) error{
 }
 
 
-var win *[0]byte
+var win *C.struct_SDL_Window
 
 func InitGL(width, height, msaa int, fullscreen bool){
 	C.SDL_Init(C.SDL_INIT_VIDEO)
