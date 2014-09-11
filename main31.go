@@ -4,7 +4,7 @@ import "time"
 import "fmt"
 
 var vshadsource = []byte(`
-#version 330
+#version 140
 void main(){
 	if(gl_VertexID == 0)
 		gl_Position = vec4(-1,-1,0,1);
@@ -19,7 +19,7 @@ void main(){
 
 `)
 var fshadsource = []byte(`
-#version 330
+#version 140
 out vec4 col;
 void main(){
 	//col = vec4(int(gl_FragCoord.x/4)&int(gl_FragCoord.y/4));
